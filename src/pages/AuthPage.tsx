@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { TextField, Button, Box, Typography, CircularProgress, Alert } from '@mui/material';
-import { mockGenerateToken, mockVerifyToken } from '../api/mockapi';
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  TextField,
+  Button,
+  Box,
+  Typography,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
+import { mockGenerateToken, mockVerifyToken } from "../api/mockapi";
 
 const AuthPage: React.FC = () => {
   const location = useLocation();
   const [redirectLink, setRedirectLink] = useState<string | null>(null);
 
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [authCode, setAuthCode] = useState('');
-  const [ticket, setTicket] = useState(''); // Assuming ticket comes from somewhere, for now, a placeholder
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [authCode, setAuthCode] = useState("");
+  const [ticket, setTicket] = useState(""); // Assuming ticket comes from somewhere, for now, a placeholder
 
   const [isLoading, setIsLoading] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -19,7 +26,7 @@ const AuthPage: React.FC = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const link = params.get('redirectLink');
+    const link = params.get("redirectLink");
     if (link) {
       try {
         // Decode the redirectLink parameter
@@ -31,12 +38,12 @@ const AuthPage: React.FC = () => {
           setTicket(ticketMatch[1]);
         }
       } catch (e) {
-        console.error('Error decoding redirectLink:', e);
-        setMessage('無效的跳轉連結');
+        console.error("Error decoding redirectLink:", e);
+        setMessage("無效的跳轉連結");
         setIsError(true);
       }
     } else {
-      setMessage('缺少 redirectLink 參數');
+      setMessage("缺少 redirectLink 參數");
       setIsError(true);
     }
   }, [location.search]);
@@ -47,16 +54,16 @@ const AuthPage: React.FC = () => {
     setIsError(false);
     try {
       const response = await mockGenerateToken({ email, phone, ticket });
-      if (response.success === 'true') {
-        setMessage(response.message || '驗證碼已發送，五分鐘內有效');
+      if (response.success === "true") {
+        setMessage(response.message || "驗證碼已發送，五分鐘內有效");
         setIsCodeSent(true);
       } else {
-        setMessage(response.message || '發送驗證碼失敗');
+        setMessage(response.message || "發送驗證碼失敗");
         setIsError(true);
       }
     } catch (error) {
-      console.error('Generate code error:', error);
-      setMessage('請求驗證碼時發生錯誤');
+      console.error("Generate code error:", error);
+      setMessage("請求驗證碼時發生錯誤");
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -68,21 +75,26 @@ const AuthPage: React.FC = () => {
     setMessage(null);
     setIsError(false);
     try {
-      const response = await mockVerifyToken({ authorizedCode: authCode, email, phone, ticket });
-      if (response.success === 'true') {
-        setMessage(response.message || '驗證成功，正在跳轉...');
+      const response = await mockVerifyToken({
+        authorizedCode: authCode,
+        email,
+        phone,
+        ticket,
+      });
+      if (response.success === "true") {
+        setMessage(response.message || "驗證成功，正在跳轉...");
         setIsCodeSent(false); // Reset for next time if needed
         // Redirect to the decoded link
         if (redirectLink) {
           window.location.href = redirectLink;
         }
       } else {
-        setMessage(response.message || '驗證碼錯誤');
+        setMessage(response.message || "驗證碼錯誤");
         setIsError(true);
       }
     } catch (error) {
-      console.error('Verify code error:', error);
-      setMessage('驗證碼驗證時發生錯誤');
+      console.error("Verify code error:", error);
+      setMessage("驗證碼驗證時發生錯誤");
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -90,40 +102,23 @@ const AuthPage: React.FC = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        padding: 2,
-        backgroundColor: '#f5f5f5',
-      }}
-    >
+    <Box className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100 sm:p-6 md:p-8">
       <Typography variant="h4" component="h1" gutterBottom>
         TS Temu UI 驗證頁面
       </Typography>
 
       {message && (
-        <Alert severity={isError ? 'error' : 'info'} sx={{ mb: 2, width: '100%', maxWidth: 400 }}>
+        <Alert
+          severity={isError ? "error" : "info"}
+          className="mb-4 w-full max-w-md"
+        >
           {message}
         </Alert>
       )}
 
       <Box
         component="form"
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          width: '100%',
-          maxWidth: 400,
-          p: 3,
-          boxShadow: 3,
-          borderRadius: 2,
-          backgroundColor: 'white',
-        }}
+        className="flex flex-col gap-4 w-full max-w-sm sm:max-w-md md:max-w-lg p-6 shadow-lg rounded-md bg-white"
         noValidate
         autoComplete="off"
       >
@@ -149,9 +144,11 @@ const AuthPage: React.FC = () => {
             onClick={handleGenerateCode}
             disabled={isLoading || (!email && !phone)}
             fullWidth
-            startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : null}
+            startIcon={
+              isLoading ? <CircularProgress size={20} color="inherit" /> : null
+            }
           >
-            {isLoading ? '發送中...' : '生成驗證碼'}
+            {isLoading ? "發送中..." : "生成驗證碼"}
           </Button>
         ) : (
           <>
@@ -163,7 +160,11 @@ const AuthPage: React.FC = () => {
               disabled={isLoading}
               fullWidth
             />
-            <Typography variant="body2" color="textSecondary" sx={{ mt: -1, mb: 1 }}>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              className="mt-[-0.25rem] mb-2"
+            >
               驗證碼已發送至您的 Email/Phone，五分鐘內有效。
             </Typography>
             <Button
@@ -171,9 +172,13 @@ const AuthPage: React.FC = () => {
               onClick={handleVerifyCode}
               disabled={isLoading || authCode.length !== 4} // Assuming 4-digit code
               fullWidth
-              startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : null}
+              startIcon={
+                isLoading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : null
+              }
             >
-              {isLoading ? '驗證中...' : '驗證並跳轉'}
+              {isLoading ? "驗證中..." : "驗證並跳轉"}
             </Button>
           </>
         )}
