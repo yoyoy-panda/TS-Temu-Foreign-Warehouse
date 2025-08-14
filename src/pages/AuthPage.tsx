@@ -250,9 +250,6 @@ const AuthPage: React.FC = () => {
             sx={textFieldSx}
           />
         </Box>
-        <Typography style={{ wordWrap: "break-word" }}>
-          借我放一下啦，會刪掉 驗證碼 1234
-        </Typography>
         <Button
           variant="contained"
           onClick={handleGenerateCode}
@@ -304,12 +301,10 @@ const AuthPage: React.FC = () => {
               }}
             >
               <Typography variant="body2" color="text.secondary">
-                {t("authPage.codeSentInfo")}
+                {t("authPage.codeSentInfo", { count: countdown })}
               </Typography>
               {isCodeSent && countdown > 0 && (
-                <Typography variant="body2" color="text.secondary">
-                  {t("authPage.countdown", { count: countdown })}
-                </Typography>
+                <Typography variant="body2" color="text.secondary"></Typography>
               )}
             </Box>
 
@@ -343,6 +338,10 @@ const AuthPage: React.FC = () => {
           </>
         )}
       </Box>
+
+      <Typography style={{ wordWrap: "break-word" }}>
+        借我放一下啦，會刪掉 驗證碼 1234
+      </Typography>
     </Box>
   );
 };
