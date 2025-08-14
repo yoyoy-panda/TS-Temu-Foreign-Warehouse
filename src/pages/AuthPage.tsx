@@ -9,15 +9,17 @@ import {
   Alert,
 } from "@mui/material";
 import { mockGenerateToken, mockVerifyToken } from "../api/mockapi";
+import { textFieldSx } from "../styles/commonStyles"; // 引入共用樣式
 
 const AuthPage: React.FC = () => {
   const location = useLocation();
   const [redirectLink, setRedirectLink] = useState<string | null>(null);
 
   const [email, setEmail] = useState("");
+  const [countryCode, setCountryCode] = useState("");
   const [phone, setPhone] = useState("");
   const [authCode, setAuthCode] = useState("");
-  const [ticket, setTicket] = useState(""); // Assuming ticket comes from somewhere, for now, a placeholder
+  const [ticket, setTicket] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -29,10 +31,8 @@ const AuthPage: React.FC = () => {
     const link = params.get("redirectLink");
     if (link) {
       try {
-        // Decode the redirectLink parameter
         const decodedLink = decodeURIComponent(link);
         setRedirectLink(decodedLink);
-        // Extract ticket from the decoded link
         const ticketMatch = decodedLink.match(/ticket=([^&]*)/);
         if (ticketMatch && ticketMatch[1]) {
           setTicket(ticketMatch[1]);
@@ -53,7 +53,7 @@ const AuthPage: React.FC = () => {
     setMessage(null);
     setIsError(false);
     try {
-      const response = await mockGenerateToken({ email, phone, ticket });
+      const response = await mockGenerateToken({ email, phone: countryCode + phone, ticket });
       if (response.success === "true") {
         setMessage(response.message || "驗證碼已發送，五分鐘內有效");
         setIsCodeSent(true);
@@ -78,13 +78,12 @@ const AuthPage: React.FC = () => {
       const response = await mockVerifyToken({
         authorizedCode: authCode,
         email,
-        phone,
+        phone: countryCode + phone,
         ticket,
       });
       if (response.success === "true") {
         setMessage(response.message || "驗證成功，正在跳轉...");
-        setIsCodeSent(false); // Reset for next time if needed
-        // Redirect to the decoded link
+        setIsCodeSent(false);
         if (redirectLink) {
           window.location.href = redirectLink;
         }
@@ -102,15 +101,26 @@ const AuthPage: React.FC = () => {
   };
 
   return (
-    <Box className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100 sm:p-6 md:p-8">
-      <Typography variant="h4" component="h1" gutterBottom>
-        TS Temu UI 驗證頁面
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        padding: 4,
+        bgcolor: "background.default",
+        color: "text.primary",
+      }}
+    >
+      <Typography variant="h4" component="h1" gutterBottom sx={{ color: "text.primary" }}>
+        TS Temu UI 驗證
       </Typography>
 
       {message && (
         <Alert
           severity={isError ? "error" : "info"}
-          className="mb-4 w-full max-w-md"
+          sx={{ mb: 4, width: "100%", maxWidth: "400px" }}
         >
           {message}
         </Alert>
@@ -118,70 +128,108 @@ const AuthPage: React.FC = () => {
 
       <Box
         component="form"
-        className="flex flex-col gap-4 w-full max-w-sm sm:max-w-md md:max-w-lg p-6 shadow-lg rounded-md bg-white"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          width: "100%",
+          maxWidth: "400px",
+          p: 3,
+          boxShadow: 3,
+          borderRadius: 2,
+          bgcolor: "background.paper",
+        }}
         noValidate
         autoComplete="off"
       >
         <TextField
-          label="Email"
+          label="Email Input Box"
           variant="outlined"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           disabled={isLoading || isCodeSent}
           fullWidth
+          sx={textFieldSx}
         />
-        <TextField
-          label="Phone (含國碼)"
-          variant="outlined"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          disabled={isLoading || isCodeSent}
-          fullWidth
-        />
-        {!isCodeSent ? (
-          <Button
-            variant="contained"
-            onClick={handleGenerateCode}
-            disabled={isLoading || (!email && !phone)}
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <TextField
+            label="國碼"
+            variant="outlined"
+            value={countryCode}
+            onChange={(e) => setCountryCode(e.target.value)}
+            disabled={isLoading || isCodeSent}
+            sx={{ width: "30%", ...textFieldSx }}
+          />
+          <TextField
+            label="Phone Input Box"
+            variant="outlined"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            disabled={isLoading || isCodeSent}
             fullWidth
-            startIcon={
-              isLoading ? <CircularProgress size={20} color="inherit" /> : null
-            }
-          >
-            {isLoading ? "發送中..." : "生成驗證碼"}
-          </Button>
-        ) : (
+            sx={textFieldSx}
+          />
+        </Box>
+
+        <Button
+          variant="contained"
+          onClick={handleGenerateCode}
+          disabled={isLoading || (!email && !phone)}
+          sx={{
+            alignSelf: "flex-end",
+            width: "fit-content",
+            mt: 1,
+            bgcolor: "primary.main",
+            color: "primary.contrastText",
+            "&:hover": { bgcolor: "primary.dark" },
+          }}
+          startIcon={
+            isLoading && !isCodeSent ? <CircularProgress size={20} color="inherit" /> : null
+          }
+        >
+          {isLoading && !isCodeSent ? "發送中..." : "要求驗證碼"}
+        </Button>
+
+        {isCodeSent && (
           <>
             <TextField
-              label="驗證碼"
+              label="驗證碼 Input Box"
               variant="outlined"
               value={authCode}
               onChange={(e) => setAuthCode(e.target.value)}
               disabled={isLoading}
               fullWidth
+              sx={textFieldSx}
             />
             <Typography
               variant="body2"
-              color="textSecondary"
-              className="mt-[-0.25rem] mb-2"
+              color="text.secondary"
+              sx={{ mt: -1, mb: 2 }}
             >
               驗證碼已發送至您的 Email/Phone，五分鐘內有效。
             </Typography>
-            <Button
-              variant="contained"
-              onClick={handleVerifyCode}
-              disabled={isLoading || authCode.length !== 4} // Assuming 4-digit code
-              fullWidth
-              startIcon={
-                isLoading ? (
-                  <CircularProgress size={20} color="inherit" />
-                ) : null
-              }
-            >
-              {isLoading ? "驗證中..." : "驗證並跳轉"}
-            </Button>
           </>
         )}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
+          <Typography variant="body1" sx={{ mr: 2, alignSelf: "center", color: "text.primary" }}>
+            TextBox
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={handleVerifyCode}
+            disabled={isLoading || authCode.length !== 4 || !isCodeSent}
+            sx={{
+              bgcolor: "primary.main",
+              color: "primary.contrastText",
+              "&:hover": { bgcolor: "primary.dark" },
+            }}
+            startIcon={
+              isLoading && isCodeSent ? <CircularProgress size={20} color="inherit" /> : null
+            }
+          >
+            {isLoading && isCodeSent ? "驗證中..." : "Confirm Btn"}
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
