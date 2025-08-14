@@ -8,7 +8,7 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-import { mockGenerateToken, mockVerifyToken } from "../api/mockapi";
+import { mockGenerateToken, mockVerifyToken } from "../api/MockApi";
 import { textFieldSx } from "../styles/commonStyles"; // 引入共用樣式
 
 const AuthPage: React.FC = () => {
@@ -211,9 +211,6 @@ const AuthPage: React.FC = () => {
           </>
         )}
         <Box sx={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
-          <Typography variant="body1" sx={{ mr: 2, alignSelf: "center", color: "text.primary" }}>
-            TextBox
-          </Typography>
           <Button
             variant="contained"
             onClick={handleVerifyCode}
@@ -227,7 +224,7 @@ const AuthPage: React.FC = () => {
               isLoading && isCodeSent ? <CircularProgress size={20} color="inherit" /> : null
             }
           >
-            {isLoading && isCodeSent ? "驗證中..." : "Confirm Btn"}
+            {isLoading && isCodeSent ? "驗證中..." : "驗證"}
           </Button>
         </Box>
       </Box>
