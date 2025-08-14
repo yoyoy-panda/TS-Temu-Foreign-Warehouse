@@ -1,53 +1,160 @@
 import { createTheme, useMediaQuery } from "@mui/material";
 import React from "react";
 
+const breakpoints = {
+  values: {
+    xs: 0,
+    sm: 640,
+    md: 768,
+    lg: 1024,
+    xl: 1280,
+  },
+};
+
+// Light mode color tokens
+const light_text_color = "#000000";
+const light_bg_color = "#fefefe";
+const light_bg_color2 = "#fcfcfc";
+const light_bg_color3 = "#f0f0f0";
+const light_placeholder_color = "#606060";
+const light_border_color = "#bbbbbb";
+const light_hover_color = "#dddddd";
+
+// Dark mode color tokens
+const dark_text_color = "#ffffff";
+const dark_bg_color = "#242424";
+const dark_bg_color2 = "#363636";
+const dark_bg_color3 = "#484848";
+const dark_placeholder_color = "#cccccc";
+const dark_border_color = "#bbbbbb";
+const dark_hover_color = "#727272";
+
+const lightTheme = createTheme({
+  breakpoints,
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#1177dd",
+    },
+    secondary: {
+      main: "#dd0044",
+    },
+    background: {
+      default: light_bg_color,
+      paper: light_bg_color2,
+    },
+    text: {
+      primary: light_text_color,
+      secondary: light_placeholder_color,
+    },
+    action: {
+      hover: light_hover_color,
+    },
+  },
+  components: {
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          "&:hover": {
+            backgroundColor: light_hover_color,
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          transition:
+            "background-color 0.5s ease, color 0.5s ease, border 0.5s ease",
+          backgroundColor: light_bg_color2,
+          color: light_text_color,
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: light_hover_color,
+          },
+        },
+        input: {
+          transition:
+            "background-color 0.5s ease, color 0.5s ease, border 0.5s ease",
+          color: light_text_color,
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          transition:
+            "background-color 0.5s ease, color 0.5s ease, border 0.5s ease",
+          color: light_placeholder_color,
+        },
+      },
+    },
+  },
+});
+
+const darkTheme = createTheme({
+  breakpoints,
+  palette: {
+    mode: "dark",
+    primary: {
+      main: "#99ccff", 
+    },
+    secondary: {
+      main: "#ff88bb", 
+    },
+    background: {
+      default: dark_bg_color,
+      paper: dark_bg_color2,
+    },
+    text: {
+      primary: dark_text_color,
+      secondary: dark_placeholder_color,
+    },
+    action: {
+      hover: dark_hover_color,
+    },
+  },
+  components: {
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          transition:
+            "background-color 0.5s ease, color 0.5s ease, border 0.5s ease",
+          "&:hover": {
+            backgroundColor: dark_hover_color,
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          transition:
+            "background-color 0.5s ease, color 0.5s ease, border 0.5s ease",
+          backgroundColor: dark_bg_color2,
+          color: dark_text_color,
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: dark_hover_color,
+          },
+        },
+        input: {
+          transition:
+            "background-color 0.5s ease, color 0.5s ease, border 0.5s ease",
+          color: dark_text_color,
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          transition: "background-color 0.5s ease, color 0.5s ease",
+          color: dark_placeholder_color,
+        },
+      },
+    },
+  },
+});
+
 export const useAppTheme = () => {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
-
-  const theme = React.useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode: prefersDarkMode ? "dark" : "light",
-          ...(prefersDarkMode
-            ? {
-                // 深色模式調色板
-                primary: {
-                  main: "#90caf9", // 淺藍色
-                },
-                secondary: {
-                  main: "#f48fb1", // 淺粉色
-                },
-                background: {
-                  default: "#121212", // 深色背景
-                  paper: "#1e1e1e", // 深色紙張背景
-                },
-                text: {
-                  primary: "#ffffff", // 白色文字
-                  secondary: "#aaaaaa", // 灰色文字
-                },
-              }
-            : {
-                // 淺色模式調色板
-                primary: {
-                  main: "#1976d2", // 深藍色
-                },
-                secondary: {
-                  main: "#dc004e", // 深粉色
-                },
-                background: {
-                  default: "#f5f5f5", // 淺色背景
-                  paper: "#ffffff", // 白色紙張背景
-                },
-                text: {
-                  primary: "#000000", // 黑色文字
-                  secondary: "#555555", // 灰色文字
-                },
-              }),
-        },
-      }),
-    [prefersDarkMode]
-  );
-
-  return theme;
+  return prefersDarkMode ? darkTheme : lightTheme;
 };
