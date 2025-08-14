@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AuthPage from "./pages/AuthPage";
 import { ThemeProvider, CssBaseline } from "@mui/material";
-import { useAppTheme } from "./styles/theme"; // 從新的檔案引入 useAppTheme
+import { useAppTheme } from "./styles/theme";
 
 function App() {
   const theme = useAppTheme(); // 使用自定義的 useAppTheme hook

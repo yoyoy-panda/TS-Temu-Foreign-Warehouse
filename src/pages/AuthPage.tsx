@@ -10,9 +10,11 @@ import {
 } from "@mui/material";
 import { mockGenerateToken, mockVerifyToken } from "../api/MockApi";
 import { textFieldSx } from "../styles/commonStyles"; // 引入共用樣式
+import { useTranslation } from "react-i18next"; // 引入 useTranslation
 
 const AuthPage: React.FC = () => {
   const location = useLocation();
+  const { t } = useTranslation(); // 初始化 useTranslation
   const [redirectLink, setRedirectLink] = useState<string | null>(null);
 
   const [email, setEmail] = useState("");
@@ -39,31 +41,35 @@ const AuthPage: React.FC = () => {
         }
       } catch (e) {
         console.error("Error decoding redirectLink:", e);
-        setMessage("無效的跳轉連結");
+        setMessage(t("authPage.invalidRedirectLink"));
         setIsError(true);
       }
     } else {
-      setMessage("缺少 redirectLink 參數");
+      setMessage(t("authPage.missingRedirectLink"));
       setIsError(true);
     }
-  }, [location.search]);
+  }, [location.search, t]); // 添加 t 到依賴陣列
 
   const handleGenerateCode = async () => {
     setIsLoading(true);
     setMessage(null);
     setIsError(false);
     try {
-      const response = await mockGenerateToken({ email, phone: countryCode + phone, ticket });
+      const response = await mockGenerateToken({
+        email,
+        phone: countryCode + phone,
+        ticket,
+      });
       if (response.success === "true") {
-        setMessage(response.message || "驗證碼已發送，五分鐘內有效");
+        setMessage(response.message || t("authPage.codeSentSuccess"));
         setIsCodeSent(true);
       } else {
-        setMessage(response.message || "發送驗證碼失敗");
+        setMessage(response.message || t("authPage.sendCodeFailed"));
         setIsError(true);
       }
     } catch (error) {
       console.error("Generate code error:", error);
-      setMessage("請求驗證碼時發生錯誤");
+      setMessage(t("authPage.requestError"));
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -82,18 +88,18 @@ const AuthPage: React.FC = () => {
         ticket,
       });
       if (response.success === "true") {
-        setMessage(response.message || "驗證成功，正在跳轉...");
+        setMessage(response.message || t("authPage.verifySuccess"));
         setIsCodeSent(false);
         if (redirectLink) {
           window.location.href = redirectLink;
         }
       } else {
-        setMessage(response.message || "驗證碼錯誤");
+        setMessage(response.message || t("authPage.verifyCodeError"));
         setIsError(true);
       }
     } catch (error) {
       console.error("Verify code error:", error);
-      setMessage("驗證碼驗證時發生錯誤");
+      setMessage(t("authPage.verifyError"));
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -113,8 +119,13 @@ const AuthPage: React.FC = () => {
         color: "text.primary",
       }}
     >
-      <Typography variant="h4" component="h1" gutterBottom sx={{ color: "text.primary" }}>
-        TS Temu UI 驗證
+      <Typography
+        variant="h4"
+        component="h1"
+        gutterBottom
+        sx={{ color: "text.primary" }}
+      >
+        {t("authPage.title")}
       </Typography>
 
       {message && (
@@ -143,7 +154,7 @@ const AuthPage: React.FC = () => {
         autoComplete="off"
       >
         <TextField
-          label="Email Input Box"
+          label={t("authPage.emailInputBox")}
           variant="outlined"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -153,7 +164,7 @@ const AuthPage: React.FC = () => {
         />
         <Box sx={{ display: "flex", gap: 1 }}>
           <TextField
-            label="國碼"
+            label={t("authPage.countryCode")}
             variant="outlined"
             value={countryCode}
             onChange={(e) => setCountryCode(e.target.value)}
@@ -161,7 +172,7 @@ const AuthPage: React.FC = () => {
             sx={{ width: "30%", ...textFieldSx }}
           />
           <TextField
-            label="Phone Input Box"
+            label={t("authPage.phoneInputBox")}
             variant="outlined"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -184,16 +195,20 @@ const AuthPage: React.FC = () => {
             "&:hover": { bgcolor: "primary.dark" },
           }}
           startIcon={
-            isLoading && !isCodeSent ? <CircularProgress size={20} color="inherit" /> : null
+            isLoading && !isCodeSent ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : null
           }
         >
-          {isLoading && !isCodeSent ? "發送中..." : "要求驗證碼"}
+          {isLoading && !isCodeSent
+            ? t("authPage.sending")
+            : t("authPage.requestVerificationCode")}
         </Button>
 
         {isCodeSent && (
           <>
             <TextField
-              label="驗證碼 Input Box"
+              label={t("authPage.verificationCodeInputBox")}
               variant="outlined"
               value={authCode}
               onChange={(e) => setAuthCode(e.target.value)}
@@ -206,11 +221,19 @@ const AuthPage: React.FC = () => {
               color="text.secondary"
               sx={{ mt: -1, mb: 2 }}
             >
-              驗證碼已發送至您的 Email/Phone，五分鐘內有效。
+              {t("authPage.codeSentInfo")}
             </Typography>
           </>
         )}
-        <Box sx={{ display: "flex", justifyContent: "flex-end", width: "100%" }}>
+        <Box
+          sx={{ display: "flex", justifyContent: "flex-end", width: "100%" }}
+        >
+          <Typography
+            variant="body1"
+            sx={{ mr: 2, alignSelf: "center", color: "text.primary" }}
+          >
+            {t("authPage.textBox")}
+          </Typography>
           <Button
             variant="contained"
             onClick={handleVerifyCode}
@@ -221,10 +244,14 @@ const AuthPage: React.FC = () => {
               "&:hover": { bgcolor: "primary.dark" },
             }}
             startIcon={
-              isLoading && isCodeSent ? <CircularProgress size={20} color="inherit" /> : null
+              isLoading && isCodeSent ? (
+                <CircularProgress size={20} color="inherit" />
+              ) : null
             }
           >
-            {isLoading && isCodeSent ? "驗證中..." : "驗證"}
+            {isLoading && isCodeSent
+              ? t("authPage.verifying")
+              : t("authPage.confirmBtn")}
           </Button>
         </Box>
       </Box>

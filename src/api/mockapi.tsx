@@ -12,8 +12,8 @@ export const mockGenerateToken = async (
   return new Promise((resolve) => {
     setTimeout(() => {
       if (
-        request.email === "test@example.com" ||
-        request.phone === "1234567890"
+        request.email === "yoyoy.twcp@gmail.com" ||
+        request.phone === "123"
       ) {
         resolve({
           resultCode: "0000",
@@ -24,7 +24,7 @@ export const mockGenerateToken = async (
         resolve({
           resultCode: "9999",
           success: "false",
-          message: "無此驗證碼",
+          message: "驗證碼發送失敗",
         });
       }
     }, 1000);
