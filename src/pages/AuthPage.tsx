@@ -7,10 +7,21 @@ import {
   Typography,
   CircularProgress,
   Alert,
+  Autocomplete, // 導入 Autocomplete
 } from "@mui/material";
+
 import { mockGenerateToken, mockVerifyToken } from "../api/MockApi";
 import { textFieldSx } from "../styles/commonStyles"; // 引入共用樣式
 import { useTranslation } from "react-i18next"; // 引入 useTranslation
+import countryData from "../assets/contrycode.json"; // 導入國家代碼資料
+
+interface CountryOption {
+  name: string;
+  dial_code: string;
+  code: string;
+}
+
+const LOCKDOWN_TIMER = 300;
 
 const AuthPage: React.FC = () => {
   const location = useLocation();
@@ -18,6 +29,7 @@ const AuthPage: React.FC = () => {
   const [redirectLink, setRedirectLink] = useState<string | null>(null);
 
   const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState<string | null>(null); // 新增 email 錯誤訊息 state
   const [countryCode, setCountryCode] = useState("");
   const [phone, setPhone] = useState("");
   const [authCode, setAuthCode] = useState("");
@@ -27,6 +39,7 @@ const AuthPage: React.FC = () => {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isError, setIsError] = useState(false);
+  const [countdown, setCountdown] = useState(0); // 新增倒數計時 state
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -50,7 +63,40 @@ const AuthPage: React.FC = () => {
     }
   }, [location.search, t]); // 添加 t 到依賴陣列
 
+  useEffect(() => {
+    let timer: number;
+    if (isCodeSent && countdown > 0) {
+      timer = setTimeout(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    } else if (countdown === 0 && isCodeSent) {
+      // 倒數結束且驗證碼已發送，表示需要重新發送
+      setIsCodeSent(false); // 禁用下一步按鈕，並重新啟用輸入欄位
+      setMessage(t("authPage.codeExpired")); // 顯示驗證碼過期訊息
+      setIsError(true);
+    }
+    return () => clearTimeout(timer);
+  }, [countdown, isCodeSent, t]);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Email Regex
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    if (newEmail && !emailRegex.test(newEmail)) {
+      setEmailError(t("authPage.invalidEmailFormat"));
+    } else {
+      setEmailError(null);
+    }
+  };
+
   const handleGenerateCode = async () => {
+    if (!emailRegex.test(email)) {
+      setEmailError(t("authPage.invalidEmailFormat"));
+      return;
+    }
+
+    console.log(email, countryCode + phone, ticket);
     setIsLoading(true);
     setMessage(null);
     setIsError(false);
@@ -63,6 +109,7 @@ const AuthPage: React.FC = () => {
       if (response.success === "true") {
         setMessage(response.message || t("authPage.codeSentSuccess"));
         setIsCodeSent(true);
+        setCountdown(LOCKDOWN_TIMER); // 成功發送驗證碼後，設定倒數計時為 300 秒
       } else {
         setMessage(response.message || t("authPage.sendCodeFailed"));
         setIsError(true);
@@ -96,6 +143,7 @@ const AuthPage: React.FC = () => {
       } else {
         setMessage(response.message || t("authPage.verifyCodeError"));
         setIsError(true);
+        setIsCodeSent(false); // 驗證碼錯誤時，重新開啟 email, 國碼, 手機號碼欄位
       }
     } catch (error) {
       console.error("Verify code error:", error);
@@ -112,8 +160,8 @@ const AuthPage: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
+        justifyContent: "start",
+        minHeight: "100dvh",
         padding: 4,
         bgcolor: "background.default",
         color: "text.primary",
@@ -131,7 +179,7 @@ const AuthPage: React.FC = () => {
       {message && (
         <Alert
           severity={isError ? "error" : "info"}
-          sx={{ mb: 4, width: "100%", maxWidth: "400px" }}
+          sx={{ mb: 4, width: "100%", maxWidth: "500px" }}
         >
           {message}
         </Alert>
@@ -144,7 +192,7 @@ const AuthPage: React.FC = () => {
           flexDirection: "column",
           gap: 2,
           width: "100%",
-          maxWidth: "400px",
+          maxWidth: "500px",
           p: 3,
           boxShadow: 3,
           borderRadius: 2,
@@ -154,25 +202,46 @@ const AuthPage: React.FC = () => {
         autoComplete="off"
       >
         <TextField
-          label={t("authPage.emailInputBox")}
+          label={t("authPage.emailLabel")}
+          placeholder={t("authPage.emailPlaceHolder")}
           variant="outlined"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={handleEmailChange} // 使用新的 onChange 處理函數
           disabled={isLoading || isCodeSent}
           fullWidth
-          sx={textFieldSx}
+          error={!!emailError} // 根據 emailError 狀態設定 error
+          helperText={emailError} // 顯示 email 錯誤訊息
         />
         <Box sx={{ display: "flex", gap: 1 }}>
-          <TextField
-            label={t("authPage.countryCode")}
-            variant="outlined"
-            value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
+          <Autocomplete
+            options={countryData}
             disabled={isLoading || isCodeSent}
-            sx={{ width: "30%", ...textFieldSx }}
+            getOptionLabel={(option: CountryOption) =>
+              `${option.name} (${option.dial_code})`
+            }
+            value={
+              countryData.find(
+                (country) => country.dial_code === countryCode
+              ) || null
+            }
+            onChange={(event, newValue: CountryOption | null) => {
+              setCountryCode(newValue ? newValue.dial_code : "");
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t("authPage.countryCodeLabel")}
+                placeholder={t("authPage.countryCodePlaceHolder")}
+                variant="outlined"
+                disabled={isLoading || isCodeSent}
+              />
+            )}
+            sx={{ width: "70%" }}
+            disablePortal
           />
           <TextField
-            label={t("authPage.phoneInputBox")}
+            label={t("authPage.phoneLabel")}
+            placeholder={t("authPage.phonePlaceHolder")}
             variant="outlined"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
@@ -181,11 +250,20 @@ const AuthPage: React.FC = () => {
             sx={textFieldSx}
           />
         </Box>
-
+        <Typography style={{ wordWrap: "break-word" }}>
+          借我放一下啦，會刪掉 驗證碼 1234
+        </Typography>
         <Button
           variant="contained"
           onClick={handleGenerateCode}
-          disabled={isLoading || (!email && !phone)}
+          disabled={
+            isLoading ||
+            !email ||
+            !!emailError || // 禁用按鈕如果 email 有錯誤
+            !countryCode ||
+            !phone ||
+            (isCodeSent && countdown > LOCKDOWN_TIMER - 60)
+          }
           sx={{
             alignSelf: "flex-end",
             width: "fit-content",
@@ -212,48 +290,58 @@ const AuthPage: React.FC = () => {
               variant="outlined"
               value={authCode}
               onChange={(e) => setAuthCode(e.target.value)}
-              disabled={isLoading}
+              disabled={isLoading || countdown === 0}
               fullWidth
               sx={textFieldSx}
             />
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ mt: -1, mb: 2 }}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mt: -1,
+                mb: 2,
+              }}
             >
-              {t("authPage.codeSentInfo")}
-            </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t("authPage.codeSentInfo")}
+              </Typography>
+              {isCodeSent && countdown > 0 && (
+                <Typography variant="body2" color="text.secondary">
+                  {t("authPage.countdown", { count: countdown })}
+                </Typography>
+              )}
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                width: "100%",
+              }}
+            >
+              <Button
+                variant="contained"
+                onClick={handleVerifyCode}
+                disabled={isLoading || !isCodeSent || countdown === 0}
+                sx={{
+                  bgcolor: "primary.main",
+                  color: "primary.contrastText",
+                  "&:hover": { bgcolor: "primary.dark" },
+                }}
+                startIcon={
+                  isLoading && isCodeSent ? (
+                    <CircularProgress size={20} color="inherit" />
+                  ) : null
+                }
+              >
+                {isLoading && isCodeSent
+                  ? t("authPage.verifying")
+                  : t("authPage.confirmBtn")}
+              </Button>
+            </Box>
           </>
         )}
-        <Box
-          sx={{ display: "flex", justifyContent: "flex-end", width: "100%" }}
-        >
-          <Typography
-            variant="body1"
-            sx={{ mr: 2, alignSelf: "center", color: "text.primary" }}
-          >
-            {t("authPage.textBox")}
-          </Typography>
-          <Button
-            variant="contained"
-            onClick={handleVerifyCode}
-            disabled={isLoading || authCode.length !== 4 || !isCodeSent}
-            sx={{
-              bgcolor: "primary.main",
-              color: "primary.contrastText",
-              "&:hover": { bgcolor: "primary.dark" },
-            }}
-            startIcon={
-              isLoading && isCodeSent ? (
-                <CircularProgress size={20} color="inherit" />
-              ) : null
-            }
-          >
-            {isLoading && isCodeSent
-              ? t("authPage.verifying")
-              : t("authPage.confirmBtn")}
-          </Button>
-        </Box>
       </Box>
     </Box>
   );

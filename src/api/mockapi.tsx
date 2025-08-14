@@ -12,8 +12,11 @@ export const mockGenerateToken = async (
   return new Promise((resolve) => {
     setTimeout(() => {
       if (
+        /*
         request.email === "yoyoy.twcp@gmail.com" ||
         request.phone === "123"
+        */
+        true
       ) {
         resolve({
           resultCode: "0000",

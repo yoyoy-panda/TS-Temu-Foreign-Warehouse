@@ -2,24 +2,29 @@
   "translation": {
     "authPage": {
       "title": "TS Temu UI 驗證",
-      "invalidRedirectLink": "無效的跳轉連結",
+      "invalidRedirectLink": "無效的跳轉連結 redirectLink",
       "missingRedirectLink": "缺少 redirectLink 參數",
-      "emailInputBox": "Email Input Box",
-      "countryCode": "國碼",
-      "phoneInputBox": "Phone Input Box",
+      "emailLabel": "電子郵件(Email)",
+      "emailPlaceHolder": "請輸入電子郵件(Email)",
+      "countryCodeLabel": "電話國碼",
+      "countryCodePlaceHolder": "請選擇電話國碼",
+      "phoneLabel": "手機號碼",
+      "phonePlaceHolder": "請輸入手機號碼",
       "requestVerificationCode": "要求驗證碼",
       "sending": "發送中...",
       "codeSentSuccess": "驗證碼已發送，五分鐘內有效",
       "sendCodeFailed": "發送驗證碼失敗",
       "requestError": "請求驗證碼時發生錯誤",
-      "verificationCodeInputBox": "驗證碼 Input Box",
+      "verificationCodeInputBox": "驗證碼",
       "codeSentInfo": "驗證碼已發送至您的 Email/Phone，五分鐘內有效。",
+      "countdown": "剩餘 {{count}} 秒",
       "verifying": "驗證中...",
       "verifySuccess": "驗證成功，正在跳轉...",
       "verifyCodeError": "驗證碼錯誤",
       "verifyError": "驗證碼驗證時發生錯誤",
       "textBox": "TextBox",
-      "confirmBtn": "Confirm Btn"
+      "confirmBtn": "驗證",
+      "invalidEmailFormat": "電子郵件格式不正確"
     }
   }
 }
