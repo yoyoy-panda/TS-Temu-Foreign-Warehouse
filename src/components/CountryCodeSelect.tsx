@@ -1,5 +1,6 @@
 import React from "react";
 import { Autocomplete, TextField } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import countryData from "../assets/contrycode.json";
 
@@ -13,12 +14,14 @@ interface CountryCodeSelectProps {
   countryCode: string;
   onCountryCodeChange: (code: string) => void;
   disabled: boolean;
+  sx?: SxProps<Theme>;
 }
 
 const CountryCodeSelect: React.FC<CountryCodeSelectProps> = ({
   countryCode,
   onCountryCodeChange,
   disabled,
+  sx,
 }) => {
   const { t } = useTranslation();
 
@@ -42,6 +45,7 @@ const CountryCodeSelect: React.FC<CountryCodeSelectProps> = ({
           placeholder={t("authPage.countryCodePlaceHolder")}
           variant="outlined"
           disabled={disabled}
+          sx={sx}
         />
       )}
       sx={{ width: "70%" }}
