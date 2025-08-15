@@ -1,11 +1,13 @@
 import React from "react";
 import {
   TextField,
-  Button,
   Box,
   CircularProgress,
   Typography,
 } from "@mui/material";
+import GenerateButton from "./GenerateButton";
+import EditDataRestartButton from "./EditDataRestartButton";
+import VerifyButton from "./VerifyButton";
 import { useTranslation } from "react-i18next";
 import { textFieldSx } from "../styles/commonStyles";
 import CountryCodeSelect from "./CountryCodeSelect";
@@ -27,6 +29,7 @@ interface AuthFormProps {
   handleAuthCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleGenerateCode: () => Promise<void>;
   handleVerifyCode: () => Promise<void>;
+  handleResetForm: () => void; // 新增重置表單的 prop
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({
@@ -38,7 +41,6 @@ const AuthForm: React.FC<AuthFormProps> = ({
   authCode,
   isCodeSent,
   countdown,
-  LOCKDOWN_TIMER,
   RESEND_TIMER,
   handleEmailChange,
   handleCountryCodeChange,
@@ -46,8 +48,11 @@ const AuthForm: React.FC<AuthFormProps> = ({
   handleAuthCodeChange,
   handleGenerateCode,
   handleVerifyCode,
+  handleResetForm, // 接收重置表單的 prop
 }) => {
   const { t } = useTranslation();
+
+  const isInputDisabled = isCodeSent && countdown > 0;
 
   return (
     <Box
@@ -75,8 +80,9 @@ const AuthForm: React.FC<AuthFormProps> = ({
         variant="outlined"
         value={email}
         onChange={handleEmailChange}
-        disabled={isCodeSent}
+        disabled={isInputDisabled}
         fullWidth
+        sx={textFieldSx}
         error={!!emailError}
         helperText={emailError}
       />
@@ -87,7 +93,8 @@ const AuthForm: React.FC<AuthFormProps> = ({
         <CountryCodeSelect
           countryCode={countryCode}
           onCountryCodeChange={handleCountryCodeChange}
-          disabled={isCodeSent}
+          disabled={isInputDisabled}
+          sx={textFieldSx}
         />
 
         {/**
@@ -99,7 +106,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
           variant="outlined"
           value={phone}
           onChange={handlePhoneChange}
-          disabled={isCodeSent}
+          disabled={isInputDisabled}
           fullWidth
           sx={textFieldSx}
           type="tel"
@@ -111,51 +118,17 @@ const AuthForm: React.FC<AuthFormProps> = ({
       {/**
        * generate request
        */}
-      <Button
-        variant="contained"
-        onClick={handleGenerateCode}
-        disabled={
-          !email ||
-          !!emailError ||
-          !countryCode ||
-          !phone ||
-          countdown > RESEND_TIMER
-        }
-        sx={{
-          alignSelf: "flex-end",
-          width: "fit-content",
-          mt: 1,
-          position: "relative",
-          overflow: "hidden",
-          bgcolor: "primary.main",
-          color: "primary.contrastText",
-          "&:hover": { bgcolor: "primary.dark" },
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            top: 0,
-            left: 0,
-            height: "100%",
-            width: `${
-              ((LOCKDOWN_TIMER - countdown) / (LOCKDOWN_TIMER - RESEND_TIMER)) *
-              100
-            }%`,
-            bgcolor: "primary.main",
-            transition: "width 0.5s ease-in-out",
-            zIndex: 0,
-          },
-          "& .MuiButton-label": {
-            position: "relative",
-            zIndex: 1,
-          },
-        }}
-      >
-        <Typography sx={{ position: "relative", zIndex: 1 }}>
-          {countdown > RESEND_TIMER
-            ? t("authPage.resendCode", { count: countdown - RESEND_TIMER })
-            : t("authPage.requestVerificationCode")}
-        </Typography>
-      </Button>
+      {!isCodeSent || countdown === 0 ? (
+        <GenerateButton
+          onClick={handleGenerateCode}
+          disabled={!email || !!emailError || !countryCode || !phone}
+        />
+      ) : (
+        <EditDataRestartButton
+          onRestart={handleResetForm} // 將 onRestart 綁定到 handleResetForm
+          RESEND_TIMER={RESEND_TIMER}
+        />
+      )}
 
       {isCodeSent && (
         <>
@@ -167,7 +140,6 @@ const AuthForm: React.FC<AuthFormProps> = ({
             variant="outlined"
             value={authCode}
             onChange={handleAuthCodeChange}
-            disabled={countdown === 0}
             fullWidth
             sx={textFieldSx}
           />
@@ -198,18 +170,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
             {/**
              * verify button
              */}
-            <Button
-              variant="contained"
-              onClick={handleVerifyCode}
-              disabled={!isCodeSent || countdown === 0}
-              sx={{
-                bgcolor: "primary.main",
-                color: "primary.contrastText",
-                "&:hover": { bgcolor: "primary.dark" },
-              }}
-            >
-              {t("authPage.confirmBtn")}
-            </Button>
+            <VerifyButton onClick={handleVerifyCode} />
           </Box>
         </>
       )}
