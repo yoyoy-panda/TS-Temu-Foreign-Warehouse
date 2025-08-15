@@ -23,7 +23,8 @@
       "verifyError": "驗證碼驗證時發生錯誤",
       "textBox": "TextBox",
       "confirmBtn": "驗證",
-      "invalidEmailFormat": "電子郵件格式不正確"
+      "invalidEmailFormat": "電子郵件格式不正確",
+      "codeExpired": "驗證碼已過期"
     }
   }
 }
