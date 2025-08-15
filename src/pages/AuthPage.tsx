@@ -6,8 +6,8 @@ import AuthMessage from "../components/AuthMessage";
 import AuthForm from "../components/AuthForm";
 
 //TODO
-const LOCKDOWN_TIMER = 30;
-const RESEND_TIMER = LOCKDOWN_TIMER - 5;
+const LOCKDOWN_TIMER = 6;
+const RESEND_TIMER = 2;
 
 const AuthPage: React.FC = () => {
   const { t } = useTranslation();
@@ -28,6 +28,7 @@ const AuthPage: React.FC = () => {
     handleAuthCodeChange,
     handleGenerateCode,
     handleVerifyCode,
+    handleResetForm, // 新增 handleResetForm
   } = useAuthLogic({ LOCKDOWN_TIMER, RESEND_TIMER });
 
   return (
@@ -71,10 +72,11 @@ const AuthPage: React.FC = () => {
         handleAuthCodeChange={handleAuthCodeChange}
         handleGenerateCode={handleGenerateCode}
         handleVerifyCode={handleVerifyCode}
+        handleResetForm={handleResetForm} // 傳遞 handleResetForm
       />
 
       <Typography style={{ wordWrap: "break-word" }}>
-        借我放一下啦，會刪掉 驗證碼 1234
+        正確驗證碼：1234
       </Typography>
     </Box>
   );

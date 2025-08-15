@@ -31,6 +31,7 @@ interface AuthLogicActions {
   handleAuthCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleGenerateCode: () => Promise<void>;
   handleVerifyCode: () => Promise<void>;
+  handleResetForm: () => void; // 新增 handleResetForm
 }
 
 export const useAuthLogic = ({
@@ -76,7 +77,7 @@ export const useAuthLogic = ({
   }, [location.search, t]);
 
   useEffect(() => {
-    let timer: number;
+    let timer: any; // 將 timer 的類型改為 any
     if (isCodeSent && countdown > 0) {
       timer = setTimeout(() => {
         setCountdown((prev) => prev - 1);
@@ -86,9 +87,24 @@ export const useAuthLogic = ({
       // 只有當 countdown 達到 0 且 isCodeSent 為 true 時，才顯示驗證碼過期訊息
       setMessage(t("authPage.codeExpired"));
       setIsError(true);
+      // setIsCodeSent(false); // 倒數計時結束時，將 isCodeSent 設為 false，以啟用輸入框
     }
     return () => clearTimeout(timer);
   }, [countdown, isCodeSent, t]);
+
+  const handleResetForm = () => {
+    setEmail("");
+    setEmailError(null);
+    setCountryCode("");
+    setPhone("");
+    setPhoneError(null);
+    setAuthCode("");
+    setTicket("");
+    setIsCodeSent(false);
+    setMessage(null);
+    setIsError(false);
+    setCountdown(0);
+  };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
@@ -119,6 +135,11 @@ export const useAuthLogic = ({
   };
 
   const handleGenerateCode = async () => {
+    // 如果是重新發送，先將 isCodeSent 設為 false，以啟用輸入框
+    if (isCodeSent && countdown === 0) {
+      setIsCodeSent(false);
+    }
+
     if (!isValidEmail(email)) {
       setEmailError(t("authPage.invalidEmailFormat"));
       return;
@@ -142,16 +163,18 @@ export const useAuthLogic = ({
         setMessage(
           t("authPage.codeSentSuccess", { email: email }) || response.message
         );
-        setIsCodeSent(true);
+        setIsCodeSent(true); // 成功發送後再設為 true，禁用輸入框
         setCountdown(LOCKDOWN_TIMER); // 每次成功發送都重置倒數計時
       } else {
         setMessage(t("authPage.sendCodeFailed") || response.message);
         setIsError(true);
+        setIsCodeSent(false); // 發送失敗時，確保輸入框保持啟用
       }
     } catch (error) {
       console.error("Generate code error:", error);
       setMessage(t("authPage.requestError"));
       setIsError(true);
+      setIsCodeSent(false); // 請求錯誤時，確保輸入框保持啟用
     } finally {
     }
   };
@@ -204,5 +227,6 @@ export const useAuthLogic = ({
     handleAuthCodeChange,
     handleGenerateCode,
     handleVerifyCode,
+    handleResetForm,
   };
 };
