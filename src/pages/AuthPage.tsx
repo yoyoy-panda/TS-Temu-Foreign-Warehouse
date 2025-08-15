@@ -5,7 +5,9 @@ import { useAuthLogic } from "../hooks/useAuthLogic";
 import AuthMessage from "../components/AuthMessage";
 import AuthForm from "../components/AuthForm";
 
-const LOCKDOWN_TIMER = 300;
+//TODO
+const LOCKDOWN_TIMER = 30;
+const RESEND_TIMER = LOCKDOWN_TIMER - 5;
 
 const AuthPage: React.FC = () => {
   const { t } = useTranslation();
@@ -14,8 +16,8 @@ const AuthPage: React.FC = () => {
     emailError,
     countryCode,
     phone,
+    phoneError,
     authCode,
-    isLoading,
     isCodeSent,
     message,
     isError,
@@ -26,15 +28,15 @@ const AuthPage: React.FC = () => {
     handleAuthCodeChange,
     handleGenerateCode,
     handleVerifyCode,
-  } = useAuthLogic({ LOCKDOWN_TIMER });
+  } = useAuthLogic({ LOCKDOWN_TIMER, RESEND_TIMER });
 
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "start",
+        alignItems: "center", // 左右置中
+        justifyContent: "start", // 上下置上
         minHeight: "100dvh",
         padding: 4,
         bgcolor: "background.default",
@@ -43,7 +45,7 @@ const AuthPage: React.FC = () => {
     >
       <Typography
         variant="h4"
-        component="h1"
+        component="h2"
         gutterBottom
         sx={{ color: "text.primary" }}
       >
@@ -57,11 +59,12 @@ const AuthPage: React.FC = () => {
         emailError={emailError}
         countryCode={countryCode}
         phone={phone}
+        phoneError={phoneError}
         authCode={authCode}
-        isLoading={isLoading}
         isCodeSent={isCodeSent}
         countdown={countdown}
         LOCKDOWN_TIMER={LOCKDOWN_TIMER}
+        RESEND_TIMER={RESEND_TIMER}
         handleEmailChange={handleEmailChange}
         handleCountryCodeChange={handleCountryCodeChange}
         handlePhoneChange={handlePhoneChange}

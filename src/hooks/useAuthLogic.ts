@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { mockGenerateToken, mockVerifyToken } from "../api/MockApi";
-import { isValidEmail } from "../utils/validation";
+import { isValidEmail, isValidPhone } from "../utils/validation";
 
 interface UseAuthLogicProps {
   LOCKDOWN_TIMER: number;
+  RESEND_TIMER: number;
 }
 
 interface AuthLogicState {
@@ -14,9 +15,9 @@ interface AuthLogicState {
   emailError: string | null;
   countryCode: string;
   phone: string;
+  phoneError: string | null;
   authCode: string;
   ticket: string;
-  isLoading: boolean;
   isCodeSent: boolean;
   message: string | null;
   isError: boolean;
@@ -34,6 +35,7 @@ interface AuthLogicActions {
 
 export const useAuthLogic = ({
   LOCKDOWN_TIMER,
+  RESEND_TIMER,
 }: UseAuthLogicProps): AuthLogicState & AuthLogicActions => {
   const location = useLocation();
   const { t } = useTranslation();
@@ -43,10 +45,9 @@ export const useAuthLogic = ({
   const [emailError, setEmailError] = useState<string | null>(null);
   const [countryCode, setCountryCode] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const [authCode, setAuthCode] = useState("");
   const [ticket, setTicket] = useState("");
-
-  const [isLoading, setIsLoading] = useState(false);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [isError, setIsError] = useState(false);
@@ -81,7 +82,8 @@ export const useAuthLogic = ({
         setCountdown((prev) => prev - 1);
       }, 1000);
     } else if (countdown === 0 && isCodeSent) {
-      setIsCodeSent(false);
+      // 當倒數計時結束時，允許重新發送，但不將 isCodeSent 設為 false
+      // 只有當 countdown 達到 0 且 isCodeSent 為 true 時，才顯示驗證碼過期訊息
       setMessage(t("authPage.codeExpired"));
       setIsError(true);
     }
@@ -91,7 +93,7 @@ export const useAuthLogic = ({
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
-    if (newEmail && !isValidEmail(newEmail)) {
+    if (newEmail && !isValidEmail(newEmail) && newEmail.length > 5) {
       setEmailError(t("authPage.invalidEmailFormat"));
     } else {
       setEmailError(null);
@@ -103,7 +105,13 @@ export const useAuthLogic = ({
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(e.target.value);
+    const newPhone = e.target.value;
+    setPhone(newPhone);
+    if (newPhone && !isValidPhone(newPhone)) {
+      setPhoneError(t("authPage.invalidPhoneFormat"));
+    } else {
+      setPhoneError(null);
+    }
   };
 
   const handleAuthCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,8 +124,12 @@ export const useAuthLogic = ({
       return;
     }
 
+    if (!isValidPhone(phone)) {
+      setPhoneError(t("authPage.invalidPhoneFormat"));
+      return;
+    }
+
     console.log(email, countryCode + phone, ticket);
-    setIsLoading(true);
     setMessage(null);
     setIsError(false);
     try {
@@ -127,11 +139,13 @@ export const useAuthLogic = ({
         ticket,
       });
       if (response.success === "true") {
-        setMessage(response.message || t("authPage.codeSentSuccess"));
+        setMessage(
+          t("authPage.codeSentSuccess", { email: email }) || response.message
+        );
         setIsCodeSent(true);
-        setCountdown(LOCKDOWN_TIMER);
+        setCountdown(LOCKDOWN_TIMER); // 每次成功發送都重置倒數計時
       } else {
-        setMessage(response.message || t("authPage.sendCodeFailed"));
+        setMessage(t("authPage.sendCodeFailed") || response.message);
         setIsError(true);
       }
     } catch (error) {
@@ -139,12 +153,10 @@ export const useAuthLogic = ({
       setMessage(t("authPage.requestError"));
       setIsError(true);
     } finally {
-      setIsLoading(false);
     }
   };
 
   const handleVerifyCode = async () => {
-    setIsLoading(true);
     setMessage(null);
     setIsError(false);
     try {
@@ -170,7 +182,6 @@ export const useAuthLogic = ({
       setMessage(t("authPage.verifyError"));
       setIsError(true);
     } finally {
-      setIsLoading(false);
     }
   };
 
@@ -180,9 +191,9 @@ export const useAuthLogic = ({
     emailError,
     countryCode,
     phone,
+    phoneError,
     authCode,
     ticket,
-    isLoading,
     isCodeSent,
     message,
     isError,

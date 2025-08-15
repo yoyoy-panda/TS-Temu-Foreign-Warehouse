@@ -12,19 +12,20 @@
       "phonePlaceHolder": "請輸入手機號碼",
       "requestVerificationCode": "要求驗證碼",
       "sending": "發送中...",
-      "codeSentSuccess": "驗證碼已發送，五分鐘內有效",
+      "codeSentSuccess": "驗證碼已發送至信箱 {{email}}。",
       "sendCodeFailed": "發送驗證碼失敗",
       "requestError": "請求驗證碼時發生錯誤",
       "verificationCodeInputBox": "驗證碼",
-      "codeSentInfo": "驗證碼已發送至您的信箱/手機, {{count}} 秒內有效。",
+      "codeSentInfo": "驗證碼已發送至您的信箱, {{count}} 秒內有效。",
       "verifying": "驗證中...",
       "verifySuccess": "驗證成功，正在跳轉...",
       "verifyCodeError": "驗證碼錯誤",
       "verifyError": "驗證碼驗證時發生錯誤",
-      "textBox": "TextBox",
       "confirmBtn": "驗證",
       "invalidEmailFormat": "電子郵件格式不正確",
-      "codeExpired": "驗證碼已過期"
+      "invalidPhoneFormat": "手機號碼格式不正確，請輸入數字",
+      "codeExpired": "驗證碼已過期",
+      "resendCode": "重新發送 ({{count}})"
     }
   }
 }
