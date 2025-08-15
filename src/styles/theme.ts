@@ -96,10 +96,10 @@ const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#99ccff", 
+      main: "#446699",
     },
     secondary: {
-      main: "#ff88bb", 
+      main: "#7799dd",
     },
     background: {
       default: dark_bg_color,
@@ -108,6 +108,7 @@ const darkTheme = createTheme({
     text: {
       primary: dark_text_color,
       secondary: dark_placeholder_color,
+      disabled: dark_placeholder_color,
     },
     action: {
       hover: dark_hover_color,
