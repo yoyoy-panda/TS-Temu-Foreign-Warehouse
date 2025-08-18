@@ -1,15 +1,15 @@
 import axios from "axios";
 
 // .env
-const baseURL = process.env.REACT_APP_BLTWCP_BASEPATH!;
-const token = process.env.REACT_APP_BLTWCP_APITOKEN!;
+const baseURL = import.meta.env.VITE_API_URL!;
+const token = import.meta.env.VITE_API_TOKEN!;
 
 const apiClient = axios.create({
   baseURL,
-  headers: {
+  /*headers: {
     token, // Swagger token
     "Content-Type": "application/json",
-  },
+  },*/
 });
 
 // common error handler
@@ -28,7 +28,7 @@ apiClient.interceptors.response.use(
 // common GET
 export async function get<TResponse>(url: string): Promise<TResponse> {
   const response = await apiClient.get<TResponse>(url);
-  //console.log(response.data);
+  console.log(response.data);
   return response.data;
 }
 
@@ -38,7 +38,7 @@ export async function post<TRequest, TResponse>(
   data: TRequest
 ): Promise<TResponse> {
   const response = await apiClient.post<TResponse>(url, data);
-  //console.log(url,response.data);
+  console.log(url, response.data);
   return response.data;
 }
 
