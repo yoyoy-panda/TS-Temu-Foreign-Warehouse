@@ -9,10 +9,10 @@ export const textFieldSx = {
   
   // Hide the number input spinner buttons
   "& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button": {
-    "-webkit-appearance": "none",
+    WebkitAppearance: "none",
     margin: 0,
   },
   "& input[type=number]": {
-    "-moz-appearance": "textfield",
+    MozAppearance: "textfield",
   },
 };
