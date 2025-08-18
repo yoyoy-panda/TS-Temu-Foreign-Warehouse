@@ -6,8 +6,8 @@ import AuthMessage from "../components/AuthMessage";
 import AuthForm from "../components/AuthForm";
 
 //TODO
-const LOCKDOWN_TIMER = 60;
-const RESEND_TIMER = 10;
+const LOCKDOWN_TIMER = 10;
+const RESEND_TIMER = 5;
 
 const AuthPage: React.FC = () => {
   const { t } = useTranslation();
@@ -28,7 +28,7 @@ const AuthPage: React.FC = () => {
     handleAuthCodeChange,
     handleGenerateCode,
     handleVerifyCode,
-    handleResetForm, // 新增 handleResetForm
+    handleResetForm, 
   } = useAuthLogic({ LOCKDOWN_TIMER, RESEND_TIMER });
 
   return (
@@ -72,10 +72,10 @@ const AuthPage: React.FC = () => {
         handleAuthCodeChange={handleAuthCodeChange}
         handleGenerateCode={handleGenerateCode}
         handleVerifyCode={handleVerifyCode}
-        handleResetForm={handleResetForm} // 傳遞 handleResetForm
+        handleResetForm={handleResetForm}
       />
 
-      <Typography style={{ wordWrap: "break-word" }}>
+      <Typography >
         正確驗證碼：1234
       </Typography>
     </Box>

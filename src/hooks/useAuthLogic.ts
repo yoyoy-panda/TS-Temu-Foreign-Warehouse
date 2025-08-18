@@ -31,7 +31,7 @@ interface AuthLogicActions {
   handleAuthCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleGenerateCode: () => Promise<void>;
   handleVerifyCode: () => Promise<void>;
-  handleResetForm: () => void; // 新增 handleResetForm
+  handleResetForm: () => void;
 }
 
 export const useAuthLogic = ({
@@ -77,7 +77,7 @@ export const useAuthLogic = ({
   }, [location.search, t]);
 
   useEffect(() => {
-    let timer: any; // 將 timer 的類型改為 any
+    let timer: any;
     if (isCodeSent && countdown > 0) {
       timer = setTimeout(() => {
         setCountdown((prev) => prev - 1);
@@ -131,11 +131,6 @@ export const useAuthLogic = ({
   };
 
   const handleGenerateCode = async () => {
-    // 如果是重新發送，先將 isCodeSent 設為 false，以啟用輸入框
-    if (isCodeSent && countdown === 0) {
-      setIsCodeSent(false);
-    }
-
     if (!isValidEmail(email)) {
       setEmailError(t("authPage.invalidEmailFormat"));
       return;
