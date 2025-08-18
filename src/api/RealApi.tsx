@@ -13,13 +13,13 @@ import type {
 export const realApi = {
   generateToken: async (data: GenerateTokenRequest) => {
     return handleApiResponse<GenerateTokenResponse>({
-      content: await post<GenerateTokenRequest, GenerateTokenResponse>("/POST-api-authorized-generate", data),
+      content: await post<GenerateTokenRequest, GenerateTokenResponse>("/authorized/generate", data),
     });
   },
 
   verifyToken: async (data: VerifyTokenRequest) => {
     return handleApiResponse<VerifyTokenResponse>({
-      content: await post<VerifyTokenRequest, VerifyTokenResponse>("/POST-api-authorized-verify", data),
+      content: await post<VerifyTokenRequest, VerifyTokenResponse>("/authorized/verify", data),
     });
   },
 };

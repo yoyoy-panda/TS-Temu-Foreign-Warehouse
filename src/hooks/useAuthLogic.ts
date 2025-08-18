@@ -148,8 +148,8 @@ export const useAuthLogic = ({
     setMessage(null);
     setIsError(false);
     try {
-      const response = await mockGenerateToken({
-        //const response = await realApi.generateToken({
+      //const response = await mockGenerateToken({
+        const response = await realApi.generateToken({
         email,
         phone: countryCode + phone,
         ticket,
