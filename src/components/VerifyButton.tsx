@@ -1,5 +1,7 @@
 import React from 'react';
 import BasicButton from './BasicButton';
+import { useTranslation } from "react-i18next";
+
 
 interface VerifyButtonProps {
   onClick: () => void;
@@ -7,9 +9,10 @@ interface VerifyButtonProps {
 }
 
 const VerifyButton: React.FC<VerifyButtonProps> = ({ onClick, disabled }) => {
+  const { t } = useTranslation();
   return (
     <BasicButton onClick={onClick} disabled={disabled}>
-      驗證
+      {t("authPage.confirmBtn")}
     </BasicButton>
   );
 };

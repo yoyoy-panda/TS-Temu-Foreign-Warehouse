@@ -10,6 +10,7 @@ const LOCKDOWN_TIMER = 10;
 const RESEND_TIMER = 5;
 
 const AuthPage: React.FC = () => {
+  
   const { t } = useTranslation();
   const {
     email,
@@ -21,14 +22,14 @@ const AuthPage: React.FC = () => {
     isCodeSent,
     message,
     isError,
-    countdown, 
+    countdown,
     handleEmailChange,
     handleCountryCodeChange,
     handlePhoneChange,
     handleAuthCodeChange,
     handleGenerateCode,
     handleVerifyCode,
-    handleResetForm, 
+    handleResetForm,
   } = useAuthLogic({ LOCKDOWN_TIMER, RESEND_TIMER });
 
   return (
@@ -75,9 +76,7 @@ const AuthPage: React.FC = () => {
         handleResetForm={handleResetForm}
       />
 
-      <Typography >
-        正確驗證碼：1234
-      </Typography>
+      <Typography>正確驗證碼：1234</Typography>
     </Box>
   );
 };
