@@ -25,8 +25,8 @@
       "invalidEmailFormat": "電子郵件格式不正確",
       "invalidPhoneFormat": "手機號碼格式不正確，請輸入數字",
       "codeExpired": "驗證碼已過期",
-      "resendCode": "重新發送 ({{count}})",
-      "resendCodeButton": "重新要求驗證碼"
+      "resendCode": "重新申請 ({{count}})",
+      "resendCodeButton": "重新申請驗證碼"
     }
   }
 }
