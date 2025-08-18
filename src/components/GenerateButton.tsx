@@ -1,15 +1,20 @@
-import React from 'react';
-import BasicButton from './BasicButton';
+import React from "react";
+import BasicButton from "./BasicButton";
+import { useTranslation } from "react-i18next";
 
 interface GenerateButtonProps {
   onClick: () => void;
   disabled?: boolean;
 }
 
-const GenerateButton: React.FC<GenerateButtonProps> = ({ onClick, disabled }) => {
+const GenerateButton: React.FC<GenerateButtonProps> = ({
+  onClick,
+  disabled,
+}) => {
+  const { t } = useTranslation();
   return (
     <BasicButton onClick={onClick} disabled={disabled}>
-      生成驗證碼
+      {t("authPage.requestVerificationCode")}
     </BasicButton>
   );
 };
