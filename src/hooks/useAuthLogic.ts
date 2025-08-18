@@ -87,19 +87,15 @@ export const useAuthLogic = ({
       // 只有當 countdown 達到 0 且 isCodeSent 為 true 時，才顯示驗證碼過期訊息
       setMessage(t("authPage.codeExpired"));
       setIsError(true);
-      // setIsCodeSent(false); // 倒數計時結束時，將 isCodeSent 設為 false，以啟用輸入框
+      setIsCodeSent(false); // 倒數計時結束時，將 isCodeSent 設為 false，以啟用輸入框
     }
     return () => clearTimeout(timer);
   }, [countdown, isCodeSent, t]);
 
   const handleResetForm = () => {
-    setEmail("");
     setEmailError(null);
-    setCountryCode("");
-    setPhone("");
     setPhoneError(null);
     setAuthCode("");
-    setTicket("");
     setIsCodeSent(false);
     setMessage(null);
     setIsError(false);

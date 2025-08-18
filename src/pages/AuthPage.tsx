@@ -6,8 +6,8 @@ import AuthMessage from "../components/AuthMessage";
 import AuthForm from "../components/AuthForm";
 
 //TODO
-const LOCKDOWN_TIMER = 6;
-const RESEND_TIMER = 2;
+const LOCKDOWN_TIMER = 60;
+const RESEND_TIMER = 10;
 
 const AuthPage: React.FC = () => {
   const { t } = useTranslation();
