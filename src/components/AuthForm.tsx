@@ -43,7 +43,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   handleAuthCodeChange,
   handleGenerateCode,
   handleVerifyCode,
-  handleResetForm, // 接收重置表單的 prop
+  handleResetForm, 
 }) => {
   const { t } = useTranslation();
 
@@ -104,8 +104,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
           disabled={isInputDisabled}
           fullWidth
           sx={textFieldSx}
-          type="tel"
-          inputProps={{ pattern: "\\d*" }}
+          type="number"
           error={!!phoneError}
           helperText={phoneError}
         />
@@ -118,7 +117,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
           <GenerateButton
             onClick={handleGenerateCode}
             disabled={
-              !email || !!emailError || !countryCode || !phone || !phoneError
+              !email || !!emailError || !countryCode || !phone || !!phoneError
             }
           />
         ) : (

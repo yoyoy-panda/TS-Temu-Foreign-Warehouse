@@ -6,4 +6,13 @@ export const textFieldSx = {
   },
   "& .MuiInputLabel-root": { color: "text.primary" },
   "& .MuiInputBase-input": { color: "text.primary" },
+  
+  // Hide the number input spinner buttons
+  "& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button": {
+    "-webkit-appearance": "none",
+    margin: 0,
+  },
+  "& input[type=number]": {
+    "-moz-appearance": "textfield",
+  },
 };
