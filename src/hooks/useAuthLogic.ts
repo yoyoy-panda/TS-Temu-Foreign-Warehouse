@@ -143,7 +143,7 @@ export const useAuthLogic = ({
       setPhoneError(t("authPage.invalidPhoneFormat"));
       return;
     }
-
+    setTicket("yohanburger");
     console.log(email, countryCode + phone, ticket);
     setMessage(null);
     setIsError(false);
@@ -154,7 +154,7 @@ export const useAuthLogic = ({
         phone: countryCode + phone,
         ticket,
       });
-      if (response.success === "true") {
+      if (response.success) {
         setMessage(
           t("authPage.codeSentSuccess", { email: email }) || response.message
         );
