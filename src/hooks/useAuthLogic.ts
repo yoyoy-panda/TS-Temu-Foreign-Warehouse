@@ -189,7 +189,7 @@ export const useAuthLogic = ({
       } else {
         setMessage(response.message || t("authPage.verifyCodeError"));
         setIsError(true);
-        setIsCodeSent(false);
+        setAuthCode("");
       }
     } catch (error) {
       console.error("Verify code error:", error);
