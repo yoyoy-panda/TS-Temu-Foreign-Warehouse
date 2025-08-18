@@ -24,7 +24,7 @@ interface AuthFormProps {
   handleAuthCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleGenerateCode: () => Promise<void>;
   handleVerifyCode: () => Promise<void>;
-  handleResetForm: () => void; // 新增重置表單的 prop
+  handleResetForm: () => void;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({
@@ -43,11 +43,13 @@ const AuthForm: React.FC<AuthFormProps> = ({
   handleAuthCodeChange,
   handleGenerateCode,
   handleVerifyCode,
-  handleResetForm, 
+  handleResetForm,
 }) => {
   const { t } = useTranslation();
 
   const isInputDisabled = isCodeSent && countdown > 0;
+  const isInputError =
+    !email || !!emailError || !countryCode || !phone || !!phoneError;
 
   return (
     <Box
@@ -63,8 +65,6 @@ const AuthForm: React.FC<AuthFormProps> = ({
         borderRadius: 2,
         bgcolor: "background.paper",
       }}
-      noValidate
-      autoComplete="off"
     >
       {/**
        * email
@@ -116,13 +116,11 @@ const AuthForm: React.FC<AuthFormProps> = ({
         {!isCodeSent || countdown === 0 ? (
           <GenerateButton
             onClick={handleGenerateCode}
-            disabled={
-              !email || !!emailError || !countryCode || !phone || !!phoneError
-            }
+            disabled={isInputError}
           />
         ) : (
           <EditDataRestartButton
-            onRestart={handleResetForm} 
+            onRestart={handleResetForm}
             RESEND_TIMER={RESEND_TIMER}
           />
         )}
