@@ -126,50 +126,36 @@ const AuthForm: React.FC<AuthFormProps> = ({
         )}
       </Box>
 
-      {isCodeSent && (
-        <>
-          {/**
-           * auth code
-           */}
-          <TextField
-            label={t("authPage.verificationCodeInputBox")}
-            variant="outlined"
-            value={authCode}
-            onChange={handleAuthCodeChange}
-            fullWidth
-            sx={textFieldSx}
-          />
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mt: -1,
-              mb: 2,
-            }}
-          >
-            {/**
-             * auth code time left
-             */}
-            <Typography variant="body2" color="text.secondary">
-              {t("authPage.codeSentInfo", { count: countdown })}
-            </Typography>
-          </Box>
+      {/**
+       * auth code
+       */}
+      <TextField
+        label={t("authPage.verificationCodeInputBox")}
+        variant="outlined"
+        value={authCode}
+        onChange={handleAuthCodeChange}
+        fullWidth
+        sx={textFieldSx}
+      />
+      {/**
+       * auth code time left
+       */}
+      <Typography variant="body2" color="text.secondary">
+        {isCodeSent ? t("authPage.codeSentInfo", { count: countdown }) : ""}
+      </Typography>
 
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              width: "100%",
-            }}
-          >
-            {/**
-             * verify button
-             */}
-            <VerifyButton onClick={handleVerifyCode} />
-          </Box>
-        </>
-      )}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          width: "100%",
+        }}
+      >
+        {/**
+         * verify button
+         */}
+        <VerifyButton onClick={handleVerifyCode} disabled={!isCodeSent} />
+      </Box>
     </Box>
   );
 };
