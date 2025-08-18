@@ -7,7 +7,7 @@
       "emailLabel": "Email",
       "emailPlaceHolder": "Please enter your email",
       "countryCodeLabel": "Country Code",
-      "countryCodePlaceHolder": "Please select country code",
+      "countryCodePlaceHolder": "Please select phone country code",
       "phoneLabel": "Phone Number",
       "phonePlaceHolder": "Please enter your phone number",
       "requestVerificationCode": "Request Verification Code",
