@@ -1,0 +1,32 @@
+{
+  "translation": {
+    "authPage": {
+      "title": "TS Temu UI Authentication",
+      "invalidRedirectLink": "Invalid redirectLink",
+      "missingRedirectLink": "Missing redirectLink parameter",
+      "emailLabel": "Email",
+      "emailPlaceHolder": "Please enter your email",
+      "countryCodeLabel": "Country Code",
+      "countryCodePlaceHolder": "Please select country code",
+      "phoneLabel": "Phone Number",
+      "phonePlaceHolder": "Please enter your phone number",
+      "requestVerificationCode": "Request Verification Code",
+      "sending": "Sending...",
+      "codeSentSuccess": "Verification code has been sent to {{email}}.",
+      "sendCodeFailed": "Failed to send verification code",
+      "requestError": "Error requesting verification code",
+      "verificationCodeInputBox": "Verification Code",
+      "codeSentInfo": "Verification code has been sent to your email, valid for {{count}} seconds.",
+      "verifying": "Verifying...",
+      "verifySuccess": "Verification successful, redirecting...",
+      "verifyCodeError": "Incorrect verification code",
+      "verifyError": "Error verifying code",
+      "confirmBtn": "Verify",
+      "invalidEmailFormat": "Invalid email format",
+      "invalidPhoneFormat": "Invalid phone number format, please enter digits only",
+      "codeExpired": "Verification code has expired",
+      "resendCode": "Resend ({{count}})",
+      "resendCodeButton": "Resend Verification Code"
+    }
+  }
+}

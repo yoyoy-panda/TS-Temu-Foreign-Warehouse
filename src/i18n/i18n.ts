@@ -1,7 +1,8 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import enTranslation from "./en.json";
+import enTranslation from "./en-US.json";
 import zhTWTranslation from "./zh-TW.json";
+import zhCNTranslation from "./zh-CN.json";
 
 i18n
   .use(initReactI18next) // passes i18n down to react-i18next
@@ -9,6 +10,7 @@ i18n
     resources: {
       en: enTranslation,
       "zh-TW": zhTWTranslation,
+      "zh-CN": zhCNTranslation,
     },
     lng: "zh-TW", // default language
     fallbackLng: "en", // fallback language if current language is not available
