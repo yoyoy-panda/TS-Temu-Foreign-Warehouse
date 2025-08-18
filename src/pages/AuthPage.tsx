@@ -21,7 +21,7 @@ const AuthPage: React.FC = () => {
     isCodeSent,
     message,
     isError,
-    countdown,
+    countdown, 
     handleEmailChange,
     handleCountryCodeChange,
     handlePhoneChange,
