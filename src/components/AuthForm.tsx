@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  TextField,
-  Box,
-  CircularProgress,
-  Typography,
-} from "@mui/material";
+import { TextField, Box, CircularProgress, Typography } from "@mui/material";
 import GenerateButton from "./GenerateButton";
 import EditDataRestartButton from "./EditDataRestartButton";
 import VerifyButton from "./VerifyButton";
@@ -118,15 +113,17 @@ const AuthForm: React.FC<AuthFormProps> = ({
       {/**
        * generate request
        */}
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         {!isCodeSent || countdown === 0 ? (
           <GenerateButton
             onClick={handleGenerateCode}
-            disabled={!email || !!emailError || !countryCode || !phone}
+            disabled={
+              !email || !!emailError || !countryCode || !phone || !phoneError
+            }
           />
         ) : (
           <EditDataRestartButton
-            onRestart={handleResetForm} // 將 onRestart 綁定到 handleResetForm
+            onRestart={handleResetForm} 
             RESEND_TIMER={RESEND_TIMER}
           />
         )}
