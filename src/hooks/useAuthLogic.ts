@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { mockGenerateToken, mockVerifyToken } from "../api/MockApi";
+import { realApi } from "../api/RealApi";
 import { isValidEmail, isValidPhone } from "../utils/validation";
 
 interface UseAuthLogicProps {
@@ -78,19 +79,21 @@ export const useAuthLogic = ({
 
   useEffect(() => {
     let timer: any;
-    if (isCodeSent && countdown > 0) {
-      timer = setTimeout(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-    } else if (countdown === 0 && isCodeSent) {
-      // 當倒數計時結束時，允許重新發送，但不將 isCodeSent 設為 false
-      // 只有當 countdown 達到 0 且 isCodeSent 為 true 時，才顯示驗證碼過期訊息
-      setMessage(t("authPage.codeExpired"));
-      setIsError(true);
-      setIsCodeSent(false); // 倒數計時結束時，將 isCodeSent 設為 false，以啟用輸入框
+    if (isCodeSent) {
+      if (countdown > 0) {
+        // 倒數
+        timer = setTimeout(() => {
+          setCountdown((prev) => prev - 1);
+        }, 1000);
+      } else if (countdown === 0) {
+        // code 已寄送 且倒數為0
+        // 顯示過期訊息，改為未寄送
+        setMessage(t("authPage.codeExpired"));
+        setIsCodeSent(false);
+      }
     }
     return () => clearTimeout(timer);
-  }, [countdown, isCodeSent, t]);
+  }, [countdown, isCodeSent]);
 
   const handleResetForm = () => {
     setEmailError(null);
@@ -146,6 +149,7 @@ export const useAuthLogic = ({
     setIsError(false);
     try {
       const response = await mockGenerateToken({
+        //const response = await realApi.generateToken({
         email,
         phone: countryCode + phone,
         ticket,
@@ -155,7 +159,7 @@ export const useAuthLogic = ({
           t("authPage.codeSentSuccess", { email: email }) || response.message
         );
         setIsCodeSent(true); // 成功發送後再設為 true，禁用輸入框
-        setCountdown(LOCKDOWN_TIMER); // 每次成功發送都重置倒數計時
+        setCountdown(LOCKDOWN_TIMER); // 成功發送 => 重置倒數計時
       } else {
         setMessage(t("authPage.sendCodeFailed") || response.message);
         setIsError(true);
@@ -175,6 +179,7 @@ export const useAuthLogic = ({
     setIsError(false);
     try {
       const response = await mockVerifyToken({
+        //const response = await realApi.verifyToken({
         authorizedCode: authCode,
         email,
         phone: countryCode + phone,
