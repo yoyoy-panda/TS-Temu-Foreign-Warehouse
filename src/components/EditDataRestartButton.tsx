@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import BasicButton from "./BasicButton";
 import { Box } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 interface EditDataRestartButtonProps {
   onRestart: () => void;
@@ -11,6 +12,7 @@ const EditDataRestartButton: React.FC<EditDataRestartButtonProps> = ({
   onRestart,
   RESEND_TIMER,
 }) => {
+  const { t } = useTranslation();
   const [countdown, setCountdown] = useState(RESEND_TIMER);
   const [disabled, setDisabled] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -72,7 +74,9 @@ const EditDataRestartButton: React.FC<EditDataRestartButtonProps> = ({
   return (
     <Box sx={{ position: "relative", width: "fit-content" }}>
       <BasicButton onClick={handleClick} disabled={disabled}>
-        {disabled ? `重新發送 (${countdown}s)` : "重新發送"}
+        {disabled
+          ? t("authPage.resendCode", { count: countdown })
+          : t("authPage.resendCodeButton")}
       </BasicButton>
       {disabled && (
         <Box
