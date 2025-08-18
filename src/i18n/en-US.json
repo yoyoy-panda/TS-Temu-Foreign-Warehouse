@@ -3,7 +3,7 @@
     "authPage": {
       "title": "TS Temu UI Authentication",
       "invalidRedirectLink": "Invalid redirectLink",
-      "missingRedirectLink": "Missing redirectLink parameter",
+      "missingRedirectLink": "Missing redirectLink ",
       "emailLabel": "Email",
       "emailPlaceHolder": "Please enter your email",
       "countryCodeLabel": "Country Code",
