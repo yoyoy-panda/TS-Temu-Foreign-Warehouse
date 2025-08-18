@@ -118,17 +118,19 @@ const AuthForm: React.FC<AuthFormProps> = ({
       {/**
        * generate request
        */}
-      {!isCodeSent || countdown === 0 ? (
-        <GenerateButton
-          onClick={handleGenerateCode}
-          disabled={!email || !!emailError || !countryCode || !phone}
-        />
-      ) : (
-        <EditDataRestartButton
-          onRestart={handleResetForm} // 將 onRestart 綁定到 handleResetForm
-          RESEND_TIMER={RESEND_TIMER}
-        />
-      )}
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+        {!isCodeSent || countdown === 0 ? (
+          <GenerateButton
+            onClick={handleGenerateCode}
+            disabled={!email || !!emailError || !countryCode || !phone}
+          />
+        ) : (
+          <EditDataRestartButton
+            onRestart={handleResetForm} // 將 onRestart 綁定到 handleResetForm
+            RESEND_TIMER={RESEND_TIMER}
+          />
+        )}
+      </Box>
 
       {isCodeSent && (
         <>
