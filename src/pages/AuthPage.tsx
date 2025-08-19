@@ -8,7 +8,7 @@ import AuthForm from "../components/AuthForm";
 //TODO
 // 300 , 60
 const LOCKDOWN_TIMER = 300;
-const RESEND_TIMER = 1;
+const RESEND_TIMER = 3;
 
 const AuthPage: React.FC = () => {
   const { t } = useTranslation();
