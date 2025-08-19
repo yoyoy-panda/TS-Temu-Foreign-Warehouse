@@ -70,10 +70,19 @@ const EditDataRestartButton: React.FC<EditDataRestartButtonProps> = ({
   };
 
   return (
-    <Box sx={{ position: "relative", width: "fit-content" }}>
-      <BasicButton onClick={handleClick} disabled={disabled} sx={{}}>
+    <Box sx={{ position: "relative", width: "40%", height: "56px", p: 0 }}>
+      <BasicButton
+        onClick={handleClick}
+        disabled={disabled}
+        sx={{
+          width: "100%",
+          whiteSpace: "normal",
+          height: "56px",
+          p: 0,
+        }}
+      >
         {disabled
-          ? t("authPage.resendCode", { count: countdown })
+          ? t("authPage.resendCodeCountdown", { count: countdown })
           : t("authPage.resendCodeButton")}
       </BasicButton>
       {disabled && (
