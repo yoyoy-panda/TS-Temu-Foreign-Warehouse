@@ -57,7 +57,7 @@ const EditDataRestartButton: React.FC<EditDataRestartButtonProps> = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [RESEND_TIMER]); 
+  }, [RESEND_TIMER]);
 
   const handleClick = () => {
     if (!disabled) {
@@ -71,7 +71,7 @@ const EditDataRestartButton: React.FC<EditDataRestartButtonProps> = ({
 
   return (
     <Box sx={{ position: "relative", width: "fit-content" }}>
-      <BasicButton onClick={handleClick} disabled={disabled}>
+      <BasicButton onClick={handleClick} disabled={disabled} sx={{}}>
         {disabled
           ? t("authPage.resendCode", { count: countdown })
           : t("authPage.resendCodeButton")}

@@ -13,7 +13,16 @@ const GenerateButton: React.FC<GenerateButtonProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <BasicButton onClick={onClick} disabled={disabled}>
+    <BasicButton
+      onClick={onClick}
+      disabled={disabled}
+      sx={{
+        width: "40%",
+        whiteSpace: "normal",
+        height: "56px",
+        p:0
+      }}
+    >
       {t("authPage.requestVerificationCode")}
     </BasicButton>
   );
