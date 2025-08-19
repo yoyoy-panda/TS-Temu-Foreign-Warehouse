@@ -43,27 +43,25 @@ const EditDataRestartButton: React.FC<EditDataRestartButtonProps> = ({
         setDisabled(false);
       }
       setProgress(currentProgress);
-    }, 50);
+    }, 25);
   };
 
   useEffect(() => {
-    // 初始化狀態
     setCountdown(RESEND_TIMER);
     setDisabled(true);
     setProgress(0);
-    startTimer(); // 組件掛載時啟動計時器
+    startTimer();
 
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
     };
-  }, [RESEND_TIMER]); // 依賴 RESEND_TIMER，當它改變時重新啟動計時器
+  }, [RESEND_TIMER]); 
 
   const handleClick = () => {
     if (!disabled) {
       onRestart();
-      // 點擊後重置狀態並重新啟動計時器
       setCountdown(RESEND_TIMER);
       setDisabled(true);
       setProgress(0);
@@ -89,7 +87,7 @@ const EditDataRestartButton: React.FC<EditDataRestartButtonProps> = ({
             bgcolor: "primary.light",
             opacity: 0.5,
             borderRadius: "4px",
-            transition: "width 0.05s linear",
+            transition: "width 0.02s linear",
             zIndex: 1,
           }}
         />
