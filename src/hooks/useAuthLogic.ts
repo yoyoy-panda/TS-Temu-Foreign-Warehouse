@@ -187,13 +187,30 @@ export const useAuthLogic = ({
         ticket,
       });
       if (response.success) {
-        setMessage(
-          t("authPage.codeSentSuccess", { email: email }) || response.message
-        );
-        setIsCodeSent(true); // 成功發送後再設為 true，禁用輸入框
-        setCountdown(LOCKDOWN_TIMER); // 成功發送 => 重置倒數計時
+        switch (Number(response.resultCode)) {
+          case 100:
+            setMessage(t("authPage.generateCodeSuccess_100", { email: email }));
+            setIsCodeSent(true); // 成功發送後再設為 true，禁用輸入框
+            setCountdown(LOCKDOWN_TIMER); // 成功發送 => 重置倒數計時
+            break;
+          case 200:
+            setMessage(t("authPage.generateCodeError_200"));
+            setIsError(true);
+            setIsCodeSent(false); // 發送失敗時，確保輸入框保持啟用
+            break;
+          case 300:
+            setMessage(t("authPage.generateCodeFailed_300"));
+            setIsError(true);
+            setIsCodeSent(false); // 發送失敗時，確保輸入框保持啟用
+            break;
+          default:
+            setMessage(response.message || t("authPage.unknownError"));
+            setIsError(true);
+            setIsCodeSent(false);
+            break;
+        }
       } else {
-        setMessage(t("authPage.sendCodeFailed") || response.message);
+        setMessage(response.message || t("authPage.sendCodeFailed"));
         setIsError(true);
         setIsCodeSent(false); // 發送失敗時，確保輸入框保持啟用
       }
