@@ -169,14 +169,14 @@ export const useAuthLogic = ({
       setPhoneError(t("authPage.invalidPhoneFormat"));
       return;
     }
-    console.log(email, countryCode + phone, ticket);
+    console.log(email, "(" + countryCode + ")" + phone, ticket);
     setMessage(null);
     setIsError(false);
     try {
       //const response = await mockGenerateToken({
       const response = await realApi.generateToken({
         email,
-        phone: countryCode + phone,
+        phone: "(" + countryCode + ")" + phone,
         ticket,
       });
       if (response.success) {
@@ -203,11 +203,11 @@ export const useAuthLogic = ({
     setMessage(null);
     setIsError(false);
     try {
-      const response = await mockVerifyToken({
-        //const response = await realApi.verifyToken({
+      //const response = await mockVerifyToken({
+        const response = await realApi.verifyToken({
         authorizedCode: authCode,
         email,
-        phone: countryCode + phone,
+        phone: "(" + countryCode + ")" + phone,
         ticket,
       });
       if (response.success === "true") {
