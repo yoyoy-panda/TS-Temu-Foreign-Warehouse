@@ -146,7 +146,7 @@ export const useAuthLogic = ({
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newPhone = e.target.value;
+    let newPhone = e.target.value;
     setPhone(newPhone);
     if (newPhone && !isValidPhone(newPhone)) {
       setPhoneError(t("authPage.invalidPhoneFormat"));
@@ -160,6 +160,13 @@ export const useAuthLogic = ({
   };
 
   const handleGenerateCode = async () => {
+    // 去除首位 0
+    // TODO 
+    // 特別注意這邊是送出無0 or 有0
+    if (phone.startsWith("0")) {
+      setPhone(phone.substring(1));
+    }
+
     if (!isValidEmail(email)) {
       setEmailError(t("authPage.invalidEmailFormat"));
       return;
@@ -204,7 +211,7 @@ export const useAuthLogic = ({
     setIsError(false);
     try {
       //const response = await mockVerifyToken({
-        const response = await realApi.verifyToken({
+      const response = await realApi.verifyToken({
         authorizedCode: authCode,
         email,
         phone: "(" + countryCode + ")" + phone,
