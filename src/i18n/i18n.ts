@@ -1,21 +1,33 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
 import enUSTranslation from "./en-US.json";
 import zhTWTranslation from "./zh-TW.json";
 import zhCNTranslation from "./zh-CN.json";
 
 i18n
+  .use(LanguageDetector) // Detect user language
   .use(initReactI18next) // passes i18n down to react-i18next
   .init({
     resources: {
-      "en-US": enUSTranslation,
-      "zh-TW": zhTWTranslation,
-      "zh-CN": zhCNTranslation,
+      "en-US": {
+        translation: enUSTranslation.translation,
+      },
+      "zh-TW": {
+        translation: zhTWTranslation.translation,
+      },
+      "zh-CN": {
+        translation: zhCNTranslation.translation,
+      },
     },
-    lng: "zh-TW", // default language
+    // lng: "zh-TW", // default language - removed to let LanguageDetector handle it
     fallbackLng: "en-US", // fallback language if current language is not available
     interpolation: {
       escapeValue: false, // react already safes from xss
+    },
+    detection: {
+      order: ["navigator", "querystring", "cookie", "localStorage", "sessionStorage", "htmlTag", "path", "subdomain"],
+      caches: ["localStorage"],
     },
   });
 
