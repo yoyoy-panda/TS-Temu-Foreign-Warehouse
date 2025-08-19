@@ -26,7 +26,7 @@
       "invalidEmailFormat": "Invalid email format",
       "invalidPhoneFormat": "Invalid phone number format, please enter digits only",
       "codeExpired": "Verification code has expired",
-      "resendCode": "Resend ({{count}})",
+      "resendCodeCountdown": "Resend ({{count}})",
       "resendCodeButton": "Resend Verification Code"
     }
   }

@@ -26,7 +26,7 @@
       "invalidEmailFormat": "电子邮件格式不正确",
       "invalidPhoneFormat": "手机号码格式不正确，请输入数字",
       "codeExpired": "验证码已过期",
-      "resendCode": "重新申请 ({{count}})",
+      "resendCodeCountdown": "重新申请 ({{count}})",
       "resendCodeButton": "重新申请验证码"
     }
   }
