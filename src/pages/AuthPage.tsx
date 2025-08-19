@@ -6,11 +6,10 @@ import AuthMessage from "../components/AuthMessage";
 import AuthForm from "../components/AuthForm";
 
 //TODO
-const LOCKDOWN_TIMER = 10;
-const RESEND_TIMER = 5;
+const LOCKDOWN_TIMER = 300;
+const RESEND_TIMER = 60;
 
 const AuthPage: React.FC = () => {
-  
   const { t } = useTranslation();
   const {
     email,
@@ -75,8 +74,6 @@ const AuthPage: React.FC = () => {
         handleVerifyCode={handleVerifyCode}
         handleResetForm={handleResetForm}
       />
-
-      <Typography>正確驗證碼：1234</Typography>
     </Box>
   );
 };

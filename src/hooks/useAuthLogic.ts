@@ -78,22 +78,44 @@ export const useAuthLogic = ({
   }, [location.search, t]);
 
   useEffect(() => {
-    let timer: any;
+    let timer: NodeJS.Timeout | null = null;
+    let startTime: number;
+    let endTime: number;
+
     if (isCodeSent) {
-      if (countdown > 0) {
-        // 倒數
-        timer = setTimeout(() => {
-          setCountdown((prev) => prev - 1);
-        }, 1000);
-      } else if (countdown === 0) {
-        // code 已寄送 且倒數為0
-        // 顯示過期訊息，改為未寄送
-        setMessage(t("authPage.codeExpired"));
-        setIsCodeSent(false);
+      // 只有在 isCodeSent 變為 true 時才初始化計時器
+      if (countdown === LOCKDOWN_TIMER) { // 剛開始倒數
+        startTime = Date.now();
+        endTime = startTime + LOCKDOWN_TIMER * 1000;
+      } else { // 倒數中，根據當前 countdown 重新計算 startTime
+        endTime = Date.now() + countdown * 1000;
+        startTime = endTime - LOCKDOWN_TIMER * 1000;
+      }
+
+      timer = setInterval(() => {
+        const now = Date.now();
+        const remainingSeconds = Math.max(0, Math.ceil((endTime - now) / 1000));
+        setCountdown(remainingSeconds);
+
+        if (remainingSeconds === 0) {
+          clearInterval(timer!);
+          setMessage(t("authPage.codeExpired"));
+          setIsCodeSent(false);
+        }
+      }, 1000); // 每秒更新一次，與顯示的秒數一致
+    } else {
+      // 如果 isCodeSent 為 false，確保計時器被清除
+      if (timer) {
+        clearInterval(timer);
       }
     }
-    return () => clearTimeout(timer);
-  }, [countdown, isCodeSent]);
+
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [isCodeSent, t, LOCKDOWN_TIMER]); 
 
   const handleResetForm = () => {
     setEmailError(null);
@@ -143,6 +165,7 @@ export const useAuthLogic = ({
       setPhoneError(t("authPage.invalidPhoneFormat"));
       return;
     }
+    //TODO
     setTicket("yohanburger");
     console.log(email, countryCode + phone, ticket);
     setMessage(null);
