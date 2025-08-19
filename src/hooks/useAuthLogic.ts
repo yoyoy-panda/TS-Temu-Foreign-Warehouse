@@ -75,6 +75,8 @@ export const useAuthLogic = ({
       setMessage(t("authPage.missingRedirectLink"));
       setIsError(true);
     }
+    //TODO
+    setTicket("yohanburger");
   }, [location.search, t]);
 
   useEffect(() => {
@@ -84,10 +86,12 @@ export const useAuthLogic = ({
 
     if (isCodeSent) {
       // 只有在 isCodeSent 變為 true 時才初始化計時器
-      if (countdown === LOCKDOWN_TIMER) { // 剛開始倒數
+      if (countdown === LOCKDOWN_TIMER) {
+        // 剛開始倒數
         startTime = Date.now();
         endTime = startTime + LOCKDOWN_TIMER * 1000;
-      } else { // 倒數中，根據當前 countdown 重新計算 startTime
+      } else {
+        // 倒數中，根據當前 countdown 重新計算 startTime
         endTime = Date.now() + countdown * 1000;
         startTime = endTime - LOCKDOWN_TIMER * 1000;
       }
@@ -115,7 +119,7 @@ export const useAuthLogic = ({
         clearInterval(timer);
       }
     };
-  }, [isCodeSent, t, LOCKDOWN_TIMER]); 
+  }, [isCodeSent, t, LOCKDOWN_TIMER]);
 
   const handleResetForm = () => {
     setEmailError(null);
@@ -165,14 +169,12 @@ export const useAuthLogic = ({
       setPhoneError(t("authPage.invalidPhoneFormat"));
       return;
     }
-    //TODO
-    setTicket("yohanburger");
     console.log(email, countryCode + phone, ticket);
     setMessage(null);
     setIsError(false);
     try {
       //const response = await mockGenerateToken({
-        const response = await realApi.generateToken({
+      const response = await realApi.generateToken({
         email,
         phone: countryCode + phone,
         ticket,

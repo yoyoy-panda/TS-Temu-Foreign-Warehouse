@@ -22,7 +22,7 @@ i18n
     },
     fallbackLng: "en-US", // fallback language if current language is not available
     interpolation: {
-      escapeValue: false, // react already safes from xss
+      escapeValue: false,
     },
     detection: {
       order: ["navigator", "querystring", "cookie", "localStorage", "sessionStorage", "htmlTag", "path", "subdomain"],
