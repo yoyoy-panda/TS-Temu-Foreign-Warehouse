@@ -109,10 +109,23 @@ const AuthForm: React.FC<AuthFormProps> = ({
           helperText={phoneError}
         />
       </Box>
+
       {/**
        * generate request
        */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+      <Box sx={{ display: "flex", gap: 1 }}>
+        {/**
+         * auth code
+         */}
+        <TextField
+          label={t("authPage.verificationCodeLabel")}
+          placeholder={t("authPage.verificationCodePlaceHolder")}
+          variant="outlined"
+          value={authCode}
+          onChange={handleAuthCodeChange}
+          sx={{...textFieldSx, width:"60%"}}
+        />
+
         {!isCodeSent || countdown === 0 ? (
           <GenerateButton
             onClick={handleGenerateCode}
@@ -127,17 +140,6 @@ const AuthForm: React.FC<AuthFormProps> = ({
       </Box>
 
       {/**
-       * auth code
-       */}
-      <TextField
-        label={t("authPage.verificationCodeInputBox")}
-        variant="outlined"
-        value={authCode}
-        onChange={handleAuthCodeChange}
-        fullWidth
-        sx={textFieldSx}
-      />
-      {/**
        * auth code time left
        */}
       <Typography variant="body2" color="text.secondary">
@@ -147,14 +149,17 @@ const AuthForm: React.FC<AuthFormProps> = ({
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "center",
           width: "100%",
         }}
       >
         {/**
          * verify button
          */}
-        <VerifyButton onClick={handleVerifyCode} disabled={!isCodeSent} />
+        <VerifyButton
+          onClick={handleVerifyCode}
+          disabled={!isCodeSent}
+        />
       </Box>
     </Box>
   );
