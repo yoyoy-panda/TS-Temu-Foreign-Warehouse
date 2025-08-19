@@ -20,13 +20,13 @@ export const mockGenerateToken = async (
       resolve({
         resultCode: "0000",
         success: "true",
-        message: "驗證碼已發送",
+        message: "驗證碼已發送(api)",
       });
     } else {
       resolve({
         resultCode: "9999",
         success: "false",
-        message: "驗證碼發送失敗",
+        message: "驗證碼發送失敗(api)",
       });
     }
   });
@@ -41,13 +41,13 @@ export const mockVerifyToken = async (
       resolve({
         resultCode: "0000",
         success: "true",
-        message: "驗證成功",
+        message: "驗證成功(api)",
       });
     } else {
       resolve({
         resultCode: "9999",
         success: "false",
-        message: "驗證碼錯誤",
+        message: "驗證碼錯誤(api)",
       });
     }
   });

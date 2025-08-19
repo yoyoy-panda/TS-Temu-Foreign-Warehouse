@@ -20,7 +20,6 @@ i18n
         translation: zhCNTranslation.translation,
       },
     },
-    // lng: "zh-TW", // default language - removed to let LanguageDetector handle it
     fallbackLng: "en-US", // fallback language if current language is not available
     interpolation: {
       escapeValue: false, // react already safes from xss
