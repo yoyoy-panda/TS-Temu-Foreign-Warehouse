@@ -30,7 +30,7 @@
       "verifyCodeError": "驗證碼驗證時發生錯誤",
       "confirmBtn": "確認",
       "invalidEmailFormat": "電子郵件格式不正確",
-      "invalidPhoneFormat": "手機號碼格式不正確，請輸入數字",
+      "invalidPhoneFormat": "手機號碼格式不正確，請輸入7-15位數字",
       "codeExpired": "驗證碼已過期",
       "resendCodeCountdown": "重新申請 ({{count}})",
       "resendCodeButton": "重新申請驗證碼"
