@@ -161,7 +161,7 @@ export const useAuthLogic = ({
 
   const handleGenerateCode = async () => {
     // 去除首位 0
-    // TODO 
+    // TODO
     // 特別注意這邊是送出無0 or 有0
     if (phone.startsWith("0")) {
       setPhone(phone.substring(1));
@@ -227,29 +227,57 @@ export const useAuthLogic = ({
     setMessage(null);
     setIsError(false);
     try {
-      //const response = await mockVerifyToken({
+      // const response = await mockVerifyToken({
       const response = await realApi.verifyToken({
         authorizedCode: authCode,
         email,
         phone: "(" + countryCode + ")" + phone,
         ticket,
       });
-      if (response.success === "true") {
-        setMessage(response.message || t("authPage.verifySuccess"));
-        setIsCodeSent(false);
-        if (redirectLink) {
-          window.location.href = redirectLink;
-        }
-      } else {
-        setMessage(response.message || t("authPage.verifyCodeError"));
-        setIsError(true);
-        setAuthCode("");
+
+      const resultCode = Number(response.resultCode);
+      switch (resultCode) {
+        case 100:
+          setMessage(t("authPage.verifyCodeSuccess"));
+          setIsCodeSent(false);
+          if (redirectLink) {
+            window.location.href = redirectLink;
+          }
+          break;
+        case 200:
+          setMessage(t("authPage.verifyCodeError_200"));
+          setIsError(true);
+          setAuthCode(""); // 驗證碼錯誤，清空輸入框讓使用者重試
+          break;
+        case 300:
+        case 400:
+        case 500:
+        case 600:
+          // 處理需要重新產生驗證碼的錯誤
+          if (resultCode === 300) setMessage(t("authPage.verifyCodeError_300"));
+          if (resultCode === 400) setMessage(t("authPage.verifyCodeError_400"));
+          if (resultCode === 500) setMessage(t("authPage.verifyCodeError_500"));
+          if (resultCode === 600) setMessage(t("authPage.verifyCodeError_600"));
+          setIsError(true);
+          setAuthCode("");
+          setIsCodeSent(false); // 允許使用者重新產生驗證碼
+          setCountdown(0);
+          break;
+        default:
+          setMessage(response.message || t("authPage.unknownError"));
+          setIsError(true);
+          setAuthCode("");
+          setIsCodeSent(false);
+          setCountdown(0);
+          break;
       }
     } catch (error) {
       console.error("Verify code error:", error);
-      setMessage(t("authPage.verifyError"));
+      setMessage(t("authPage.requestError"));
       setIsError(true);
-    } finally {
+      setAuthCode("");
+      setIsCodeSent(false);
+      setCountdown(0);
     }
   };
 
