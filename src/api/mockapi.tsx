@@ -1,4 +1,4 @@
-import type {
+/*import type {
   GenerateTokenRequest,
   GenerateTokenResponse,
   VerifyTokenRequest,
@@ -11,10 +11,10 @@ export const mockGenerateToken = async (
   console.log("Mock API: generateToken request", request);
   return new Promise((resolve) => {
     if (
-      /*
+      
         request.email === "yoyoy.twcp@gmail.com" ||
         request.phone === "123"
-        */
+        
       true
     ) {
       resolve({
@@ -52,3 +52,4 @@ export const mockVerifyToken = async (
     }
   });
 };
+*/
