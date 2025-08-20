@@ -23,6 +23,7 @@ const AuthPage: React.FC = () => {
     message,
     isError,
     countdown,
+    isGeneratingCode,
     handleEmailChange,
     handleCountryCodeChange,
     handlePhoneChange,
@@ -74,6 +75,7 @@ const AuthPage: React.FC = () => {
         handleGenerateCode={handleGenerateCode}
         handleVerifyCode={handleVerifyCode}
         handleResetForm={handleResetForm}
+        isGeneratingCode={isGeneratingCode} 
       />
     </Box>
   );

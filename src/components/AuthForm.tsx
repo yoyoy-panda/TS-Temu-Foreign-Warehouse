@@ -18,6 +18,7 @@ interface AuthFormProps {
   countdown: number;
   LOCKDOWN_TIMER: number;
   RESEND_TIMER: number;
+  isGeneratingCode: boolean; // 新增狀態
   handleEmailChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCountryCodeChange: (code: string) => void;
   handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -37,6 +38,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   isCodeSent,
   countdown,
   RESEND_TIMER,
+  isGeneratingCode, // 接收新狀態
   handleEmailChange,
   handleCountryCodeChange,
   handlePhoneChange,
@@ -47,7 +49,8 @@ const AuthForm: React.FC<AuthFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const isInputDisabled = isCodeSent && countdown > 0;
+  // 輸入框禁用條件：已發送驗證碼且倒數中，或者正在生成驗證碼
+  const isInputDisabled = (isCodeSent && countdown > 0) || isGeneratingCode;
   const isInputError =
     !email || !!emailError || !countryCode || !phone || !!phoneError;
 
@@ -111,7 +114,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
       </Box>
 
       {/**
-       * generate request
+       * generate
        */}
       <Box sx={{ display: "flex", gap: 1 }}>
         {/**
@@ -129,7 +132,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
         {!isCodeSent || countdown === 0 ? (
           <GenerateButton
             onClick={handleGenerateCode}
-            disabled={isInputError}
+            disabled={isInputError || isGeneratingCode} // 按鈕禁用條件：輸入錯誤或正在生成驗證碼
           />
         ) : (
           <EditDataRestartButton
@@ -160,6 +163,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
         <VerifyButton onClick={handleVerifyCode} disabled={!isCodeSent} />
       </Box>
     </Box>
+    
   );
 };
 

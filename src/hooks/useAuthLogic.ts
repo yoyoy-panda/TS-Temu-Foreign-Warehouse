@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { mockGenerateToken, mockVerifyToken } from "../api/MockApi";
 import { realApi } from "../api/RealApi";
 import { isValidEmail, isValidPhone } from "../utils/validation";
 
@@ -23,6 +22,7 @@ interface AuthLogicState {
   message: string | null;
   isError: boolean;
   countdown: number;
+  isGeneratingCode: boolean;
 }
 
 interface AuthLogicActions {
@@ -54,6 +54,7 @@ export const useAuthLogic = ({
   const [message, setMessage] = useState<string | null>(null);
   const [isError, setIsError] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [isGeneratingCode, setIsGeneratingCode] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -76,8 +77,33 @@ export const useAuthLogic = ({
       setIsError(true);
     }
     //TODO
-    setTicket("yohanburger");
+    setTicket(TEMP_ticketRandomGenerate());
   }, [location.search, t]);
+
+  const TEMP_ticketRandomGenerate = () => {
+    const randomNumber = Math.random();
+    const scaledNumber = randomNumber * 10;
+    const flooredNumber = Math.floor(scaledNumber);
+    const finalNumber = flooredNumber + 1;
+    const tt = [
+      "aa",
+      "bb",
+      "cc",
+      "dd",
+      "ee",
+      "ff",
+      "gg",
+      "hh",
+      "ii",
+      "jj",
+      "kk",
+      "ll",
+      "mm",
+      "nn",
+      "oo",
+    ];
+    return String(tt[finalNumber]);
+  };
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -160,30 +186,39 @@ export const useAuthLogic = ({
   };
 
   const handleGenerateCode = async () => {
-    // 去除首位 0
-    // TODO
-    // 特別注意這邊是送出無0 or 有0
-    if (phone.startsWith("0")) {
-      setPhone(phone.substring(1));
-    }
+    setIsGeneratingCode(true); // 按下後立刻鎖定輸入
+    setMessage(null); // 清除之前的訊息
+    setIsError(false); // 清除之前的錯誤狀態
 
     if (!isValidEmail(email)) {
       setEmailError(t("authPage.invalidEmailFormat"));
+      setIsGeneratingCode(false); // 失敗時解除鎖定
       return;
     }
 
     if (!isValidPhone(phone)) {
       setPhoneError(t("authPage.invalidPhoneFormat"));
+      setIsGeneratingCode(false); // 失敗時解除鎖定
       return;
     }
-    console.log(email, "(" + countryCode + ")" + phone, ticket);
+
+
+    // 去除首位 0
+    let processedPhone = phone; // 預設使用原始輸入
+
+    if (processedPhone.startsWith("0")) {
+      processedPhone = processedPhone.substring(1);
+      setPhone(processedPhone);
+    }
+
+    console.log(email, "(" + countryCode + ")" + processedPhone, ticket);
     setMessage(null);
     setIsError(false);
     try {
       //const response = await mockGenerateToken({
       const response = await realApi.generateToken({
         email,
-        phone: "(" + countryCode + ")" + phone,
+        phone: "(" + countryCode + ")" + processedPhone,
         ticket,
       });
       if (response.success) {
@@ -220,21 +255,30 @@ export const useAuthLogic = ({
       setIsError(true);
       setIsCodeSent(false); // 請求錯誤時，確保輸入框保持啟用
     } finally {
+      setIsGeneratingCode(false); // 無論成功或失敗，都解除鎖定
     }
   };
 
   const handleVerifyCode = async () => {
     setMessage(null);
     setIsError(false);
+
+    // 去除首位 0
+    let processedPhone = phone; // 預設使用原始輸入
+
+    if (processedPhone.startsWith("0")) {
+      processedPhone = processedPhone.substring(1);
+      setPhone(processedPhone);
+    }
+
     try {
       // const response = await mockVerifyToken({
       const response = await realApi.verifyToken({
         authorizedCode: authCode,
         email,
-        phone: "(" + countryCode + ")" + phone,
+        phone: "(" + countryCode + ")" + processedPhone,
         ticket,
       });
-
       const resultCode = Number(response.resultCode);
       switch (resultCode) {
         case 100:
@@ -294,6 +338,7 @@ export const useAuthLogic = ({
     message,
     isError,
     countdown,
+    isGeneratingCode,
     handleEmailChange,
     handleCountryCodeChange,
     handlePhoneChange,
