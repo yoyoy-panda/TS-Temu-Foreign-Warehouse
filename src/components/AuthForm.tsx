@@ -123,7 +123,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
           variant="outlined"
           value={authCode}
           onChange={handleAuthCodeChange}
-          sx={{...textFieldSx, width:"60%"}}
+          sx={{ ...textFieldSx, width: "60%" }}
         />
 
         {!isCodeSent || countdown === 0 ? (
@@ -151,15 +151,13 @@ const AuthForm: React.FC<AuthFormProps> = ({
           display: "flex",
           justifyContent: "center",
           width: "100%",
+          height: "50px",
         }}
       >
         {/**
          * verify button
          */}
-        <VerifyButton
-          onClick={handleVerifyCode}
-          disabled={!isCodeSent}
-        />
+        <VerifyButton onClick={handleVerifyCode} disabled={!isCodeSent} />
       </Box>
     </Box>
   );
