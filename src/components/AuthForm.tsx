@@ -61,8 +61,8 @@ const AuthForm: React.FC<AuthFormProps> = ({
         width: "100%",
         maxWidth: "500px",
         p: 3,
-        boxShadow: 3,
-        borderRadius: 2,
+        boxShadow: 5,
+        borderRadius: 5,
         bgcolor: "background.paper",
       }}
     >

@@ -99,7 +99,7 @@ const darkTheme = createTheme({
       main: "#446699",
     },
     secondary: {
-      main: "#7799dd",
+      main: "#5588bb",
     },
     background: {
       default: dark_bg_color,
