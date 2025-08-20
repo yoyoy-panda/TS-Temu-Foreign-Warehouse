@@ -45,7 +45,7 @@ const CountryCodeSelect: React.FC<CountryCodeSelectProps> = ({
           placeholder={t("authPage.countryCodePlaceHolder")}
           variant="outlined"
           disabled={disabled}
-          sx={sx}
+          sx={{ ...sx }}
         />
       )}
       sx={{ width: "70%" }}

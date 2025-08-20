@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button } from '@mui/material';
-import type { ButtonProps } from '@mui/material';
+import React from "react";
+import { Button } from "@mui/material";
+import type { ButtonProps } from "@mui/material";
 
 interface BasicButtonProps extends ButtonProps {
   children: React.ReactNode;

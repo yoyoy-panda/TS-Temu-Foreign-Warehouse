@@ -3,17 +3,14 @@ import { Alert } from "@mui/material";
 
 interface AuthMessageProps {
   message: string | null;
-  isError: boolean;
+  severity?: "success" | "error" | "info" | "warning" | null;
 }
 
-const AuthMessage: React.FC<AuthMessageProps> = ({ message, isError }) => {
+const AuthMessage: React.FC<AuthMessageProps> = ({ message, severity}) => {
   if (!message) return null;
 
   return (
-    <Alert
-      severity={isError ? "error" : "info"}
-      sx={{ mb: 4, width: "100%", maxWidth: "500px" }}
-    >
+    <Alert severity={severity === null ? undefined : severity} sx={{ m: 1, width: "100%", maxWidth: "500px" }}>
       {message}
     </Alert>
   );

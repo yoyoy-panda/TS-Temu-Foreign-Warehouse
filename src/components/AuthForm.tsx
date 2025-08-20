@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, Box, CircularProgress, Typography } from "@mui/material";
+import { TextField, Box, Typography } from "@mui/material";
 import GenerateButton from "./GenerateButton";
 import EditDataRestartButton from "./EditDataRestartButton";
 import VerifyButton from "./VerifyButton";
@@ -18,7 +18,7 @@ interface AuthFormProps {
   countdown: number;
   LOCKDOWN_TIMER: number;
   RESEND_TIMER: number;
-  isGeneratingCode: boolean; // 新增狀態
+  isGeneratingCode: boolean;
   handleEmailChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCountryCodeChange: (code: string) => void;
   handlePhoneChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -38,7 +38,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
   isCodeSent,
   countdown,
   RESEND_TIMER,
-  isGeneratingCode, // 接收新狀態
+  isGeneratingCode,
   handleEmailChange,
   handleCountryCodeChange,
   handlePhoneChange,
@@ -49,7 +49,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // 輸入框禁用條件：已發送驗證碼且倒數中，或者正在生成驗證碼
+  // 輸入框禁用條件：已發送驗證碼且倒數中/正在生成驗證碼
   const isInputDisabled = (isCodeSent && countdown > 0) || isGeneratingCode;
   const isInputError =
     !email || !!emailError || !countryCode || !phone || !!phoneError;
@@ -113,9 +113,6 @@ const AuthForm: React.FC<AuthFormProps> = ({
         />
       </Box>
 
-      {/**
-       * generate
-       */}
       <Box sx={{ display: "flex", gap: 1 }}>
         {/**
          * auth code
@@ -129,10 +126,14 @@ const AuthForm: React.FC<AuthFormProps> = ({
           sx={{ ...textFieldSx, width: "60%" }}
         />
 
+        {/**
+         * generate button
+         */}
         {!isCodeSent || countdown === 0 ? (
           <GenerateButton
             onClick={handleGenerateCode}
-            disabled={isInputError || isGeneratingCode} // 按鈕禁用條件：輸入錯誤或正在生成驗證碼
+            disabled={isInputError || isGeneratingCode}
+            isGeneratingCode={isGeneratingCode}
           />
         ) : (
           <EditDataRestartButton
@@ -143,7 +144,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
       </Box>
 
       {/**
-       * auth code time left
+       * time left for auth code
        */}
       <Typography variant="body2" color="text.secondary">
         {isCodeSent ? t("authPage.codeSentInfo", { count: countdown }) : ""}
@@ -163,7 +164,6 @@ const AuthForm: React.FC<AuthFormProps> = ({
         <VerifyButton onClick={handleVerifyCode} disabled={!isCodeSent} />
       </Box>
     </Box>
-    
   );
 };
 

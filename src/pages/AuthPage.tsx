@@ -5,7 +5,7 @@ import { useAuthLogic } from "../hooks/useAuthLogic";
 import AuthMessage from "../components/AuthMessage";
 import AuthForm from "../components/AuthForm";
 
-//TODO
+// TODO
 // 300 , 60
 const LOCKDOWN_TIMER = 300;
 const RESEND_TIMER = 3;
@@ -21,7 +21,7 @@ const AuthPage: React.FC = () => {
     authCode,
     isCodeSent,
     message,
-    isError,
+    severity,
     countdown,
     isGeneratingCode,
     handleEmailChange,
@@ -38,24 +38,19 @@ const AuthPage: React.FC = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center", // 左右置中
-        justifyContent: "start", // 上下置上
+        alignItems: "center",
+        justifyContent: "start",
         minHeight: "100dvh",
         padding: 4,
         bgcolor: "background.default",
         color: "text.primary",
       }}
     >
-      <Typography
-        variant="h4"
-        component="h2"
-        gutterBottom
-        sx={{ color: "text.primary" }}
-      >
+      <Typography variant="h4" component="h2" sx={{ color: "text.primary" }}>
         {t("authPage.title")}
       </Typography>
 
-      <AuthMessage message={message} isError={isError} />
+      <AuthMessage message={message} severity={severity} />
 
       <AuthForm
         email={email}
@@ -75,7 +70,7 @@ const AuthPage: React.FC = () => {
         handleGenerateCode={handleGenerateCode}
         handleVerifyCode={handleVerifyCode}
         handleResetForm={handleResetForm}
-        isGeneratingCode={isGeneratingCode} 
+        isGeneratingCode={isGeneratingCode}
       />
     </Box>
   );

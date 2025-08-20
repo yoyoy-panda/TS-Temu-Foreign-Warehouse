@@ -20,7 +20,7 @@ interface AuthLogicState {
   ticket: string;
   isCodeSent: boolean;
   message: string | null;
-  isError: boolean;
+  severity: "success" | "error" | "info" | "warning" | null;
   countdown: number;
   isGeneratingCode: boolean;
 }
@@ -52,10 +52,13 @@ export const useAuthLogic = ({
   const [ticket, setTicket] = useState("");
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [isError, setIsError] = useState(false);
+  const [severity, setSeverity] = useState<
+    "success" | "error" | "info" | "warning" | null
+  >(null);
   const [countdown, setCountdown] = useState(0);
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
 
+  // parse directLink
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const link = params.get("redirectLink");
@@ -70,15 +73,16 @@ export const useAuthLogic = ({
       } catch (e) {
         console.error("Error decoding redirectLink:", e);
         setMessage(t("authPage.invalidRedirectLink"));
-        setIsError(true);
+        setSeverity("error");
       }
     } else {
       setMessage(t("authPage.missingRedirectLink"));
-      setIsError(true);
+      setSeverity("error");
     }
     //TODO
+    //remove this after real directLink is checked
     setTicket(TEMP_ticketRandomGenerate());
-  }, [location.search, t]);
+  }, [location, t]);
 
   const TEMP_ticketRandomGenerate = () => {
     const randomNumber = Math.random();
@@ -111,7 +115,6 @@ export const useAuthLogic = ({
     let endTime: number;
 
     if (isCodeSent) {
-      // 只有在 isCodeSent 變為 true 時才初始化計時器
       if (countdown === LOCKDOWN_TIMER) {
         // 剛開始倒數
         startTime = Date.now();
@@ -132,14 +135,13 @@ export const useAuthLogic = ({
           setMessage(t("authPage.codeExpired"));
           setIsCodeSent(false);
         }
-      }, 1000); // 每秒更新一次，與顯示的秒數一致
+      }, 1000);
     } else {
-      // 如果 isCodeSent 為 false，確保計時器被清除
+      // 如果 isCodeSent 為 false，清除計時器
       if (timer) {
         clearInterval(timer);
       }
     }
-
     return () => {
       if (timer) {
         clearInterval(timer);
@@ -153,14 +155,14 @@ export const useAuthLogic = ({
     setAuthCode("");
     setIsCodeSent(false);
     setMessage(null);
-    setIsError(false);
+    setSeverity(null);
     setCountdown(0);
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newEmail = e.target.value;
+    const newEmail = e.target.value.trim();
     setEmail(newEmail);
-    if (newEmail && !isValidEmail(newEmail) && newEmail.length > 5) {
+    if (newEmail && !isValidEmail(newEmail) && !(newEmail.length < 7)) {
       setEmailError(t("authPage.invalidEmailFormat"));
     } else {
       setEmailError(null);
@@ -172,9 +174,9 @@ export const useAuthLogic = ({
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let newPhone = e.target.value;
+    let newPhone = e.target.value.trim();
     setPhone(newPhone);
-    if (newPhone && !isValidPhone(newPhone)) {
+    if (newPhone && !isValidPhone(newPhone) && !(newPhone.length < 7)) {
       setPhoneError(t("authPage.invalidPhoneFormat"));
     } else {
       setPhoneError(null);
@@ -186,9 +188,9 @@ export const useAuthLogic = ({
   };
 
   const handleGenerateCode = async () => {
-    setIsGeneratingCode(true); // 按下後立刻鎖定輸入
-    setMessage(null); // 清除之前的訊息
-    setIsError(false); // 清除之前的錯誤狀態
+    setIsGeneratingCode(true); // 按下後立刻鎖定輸入 (在api 之前)
+    setMessage(null);
+    setSeverity(null);
 
     if (!isValidEmail(email)) {
       setEmailError(t("authPage.invalidEmailFormat"));
@@ -198,14 +200,12 @@ export const useAuthLogic = ({
 
     if (!isValidPhone(phone)) {
       setPhoneError(t("authPage.invalidPhoneFormat"));
-      setIsGeneratingCode(false); // 失敗時解除鎖定
+      setIsGeneratingCode(false);
       return;
     }
 
-
-    // 去除首位 0
-    let processedPhone = phone; // 預設使用原始輸入
-
+    // 去除電話首位 0
+    let processedPhone = phone;
     if (processedPhone.startsWith("0")) {
       processedPhone = processedPhone.substring(1);
       setPhone(processedPhone);
@@ -213,9 +213,8 @@ export const useAuthLogic = ({
 
     console.log(email, "(" + countryCode + ")" + processedPhone, ticket);
     setMessage(null);
-    setIsError(false);
+    setSeverity(null);
     try {
-      //const response = await mockGenerateToken({
       const response = await realApi.generateToken({
         email,
         phone: "(" + countryCode + ")" + processedPhone,
@@ -225,54 +224,56 @@ export const useAuthLogic = ({
         switch (Number(response.resultCode)) {
           case 100:
             setMessage(t("authPage.generateCodeSuccess_100", { email: email }));
-            setIsCodeSent(true); // 成功發送後再設為 true，禁用輸入框
+            setSeverity("success");
+            setIsCodeSent(true); // 成功發送後 設為 true，禁用輸入框
             setCountdown(LOCKDOWN_TIMER); // 成功發送 => 重置倒數計時
             break;
           case 200:
             setMessage(t("authPage.generateCodeError_200"));
-            setIsError(true);
-            setIsCodeSent(false); // 發送失敗時，確保輸入框保持啟用
+            setSeverity("error");
+            setIsCodeSent(false); // 失敗時，保持啟用輸入框
             break;
           case 300:
             setMessage(t("authPage.generateCodeFailed_300"));
-            setIsError(true);
-            setIsCodeSent(false); // 發送失敗時，確保輸入框保持啟用
+            setSeverity("error");
+            setIsCodeSent(false);
             break;
           default:
             setMessage(response.message || t("authPage.unknownError"));
-            setIsError(true);
+            setSeverity("error");
             setIsCodeSent(false);
             break;
         }
       } else {
         setMessage(response.message || t("authPage.sendCodeFailed"));
-        setIsError(true);
-        setIsCodeSent(false); // 發送失敗時，確保輸入框保持啟用
+        setSeverity("error");
+        setIsCodeSent(false);
       }
     } catch (error) {
       console.error("Generate code error:", error);
       setMessage(t("authPage.requestError"));
-      setIsError(true);
-      setIsCodeSent(false); // 請求錯誤時，確保輸入框保持啟用
+      setSeverity("error");
+      setIsCodeSent(false);
     } finally {
-      setIsGeneratingCode(false); // 無論成功或失敗，都解除鎖定
+      setIsGeneratingCode(false);
     }
   };
 
   const handleVerifyCode = async () => {
+    if (authCode.length === 0) {
+      return;
+    }
     setMessage(null);
-    setIsError(false);
+    setSeverity("error");
 
     // 去除首位 0
-    let processedPhone = phone; // 預設使用原始輸入
-
+    let processedPhone = phone;
     if (processedPhone.startsWith("0")) {
       processedPhone = processedPhone.substring(1);
       setPhone(processedPhone);
     }
 
     try {
-      // const response = await mockVerifyToken({
       const response = await realApi.verifyToken({
         authorizedCode: authCode,
         email,
@@ -290,7 +291,7 @@ export const useAuthLogic = ({
           break;
         case 200:
           setMessage(t("authPage.verifyCodeError_200"));
-          setIsError(true);
+          setSeverity("error");
           setAuthCode(""); // 驗證碼錯誤，清空輸入框讓使用者重試
           break;
         case 300:
@@ -298,18 +299,15 @@ export const useAuthLogic = ({
         case 500:
         case 600:
           // 處理需要重新產生驗證碼的錯誤
-          if (resultCode === 300) setMessage(t("authPage.verifyCodeError_300"));
-          if (resultCode === 400) setMessage(t("authPage.verifyCodeError_400"));
-          if (resultCode === 500) setMessage(t("authPage.verifyCodeError_500"));
-          if (resultCode === 600) setMessage(t("authPage.verifyCodeError_600"));
-          setIsError(true);
+          setSeverity("error");
+          setMessage(t(`authPage.verifyCodeError_${resultCode}`));
           setAuthCode("");
           setIsCodeSent(false); // 允許使用者重新產生驗證碼
           setCountdown(0);
           break;
         default:
           setMessage(response.message || t("authPage.unknownError"));
-          setIsError(true);
+          setSeverity("error");
           setAuthCode("");
           setIsCodeSent(false);
           setCountdown(0);
@@ -318,7 +316,7 @@ export const useAuthLogic = ({
     } catch (error) {
       console.error("Verify code error:", error);
       setMessage(t("authPage.requestError"));
-      setIsError(true);
+      setSeverity("error");
       setAuthCode("");
       setIsCodeSent(false);
       setCountdown(0);
@@ -336,7 +334,7 @@ export const useAuthLogic = ({
     ticket,
     isCodeSent,
     message,
-    isError,
+    severity,
     countdown,
     isGeneratingCode,
     handleEmailChange,

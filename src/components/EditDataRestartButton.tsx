@@ -96,7 +96,7 @@ const EditDataRestartButton: React.FC<EditDataRestartButtonProps> = ({
             bgcolor: "primary.light",
             opacity: 0.5,
             borderRadius: "4px",
-            transition: "width 0.02s linear",
+            transition: "width 0.1s linear",
             zIndex: 1,
           }}
         />
