@@ -121,6 +121,7 @@ export const useAuthLogic = ({
         if (remainingSeconds === 0) {
           clearInterval(timer!);
           setMessage(t("authPage.codeExpired"));
+          setSeverity("warning");
           setIsCodeSent(false);
         }
       }, 1000);
