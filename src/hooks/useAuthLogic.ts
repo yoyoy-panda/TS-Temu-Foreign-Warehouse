@@ -125,7 +125,7 @@ export const useAuthLogic = ({
         }
       }, 1000);
     } else {
-      // 如果 isCodeSent 為 false，清除計時器
+      // 重新要求驗證碼，清除計時器
       if (timer) {
         clearInterval(timer);
       }
