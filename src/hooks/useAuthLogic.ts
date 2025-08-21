@@ -58,56 +58,40 @@ export const useAuthLogic = ({
   const [countdown, setCountdown] = useState(0);
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
 
-  // parse directLink
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const link = params.get("redirectLink");
-    if (link) {
-      try {
-        const decodedLink = decodeURIComponent(link);
-        setRedirectLink(decodedLink);
-        const ticketMatch = decodedLink.match(/ticket=([^&]*)/);
-        if (ticketMatch && ticketMatch[1]) {
-          setTicket(ticketMatch[1]);
+    try {
+      const params = new URLSearchParams(location.search);
+
+      const extractedRedirectLink = params.get("redirectLink");
+
+      if (extractedRedirectLink) {
+        setRedirectLink(extractedRedirectLink);
+        try {
+          const innerUrl = new URL(extractedRedirectLink);
+          const innerParams = new URLSearchParams(innerUrl.search);
+          const extractedTicket = innerParams.get("ticket");
+
+          if (extractedTicket) {
+            setTicket(extractedTicket);
+          } else {
+            setMessage(t("authPage.missingRedirectLinkOrMissingTicket"));
+            setSeverity("error");
+          }
+        } catch (e) {
+          console.error("Error decoding redirectLink:", e);
+          setMessage(t("authPage.invalidRedirectLinkOrInvalidTicket"));
+          setSeverity("error");
         }
-      } catch (e) {
-        console.error("Error decoding redirectLink:", e);
-        setMessage(t("authPage.invalidRedirectLink"));
+      } else {
+        setMessage(t("authPage.missingRedirectLinkOrMissingTicket"));
         setSeverity("error");
       }
-    } else {
+    } catch (e) {
       setMessage(t("authPage.missingRedirectLink"));
       setSeverity("error");
+      console.error("Error extracting redirectLink:", e);
     }
-    //TODO
-    //remove this after real directLink is checked
-    setTicket(TEMP_ticketRandomGenerate());
-  }, [location, t]);
-
-  const TEMP_ticketRandomGenerate = () => {
-    const randomNumber = Math.random();
-    const scaledNumber = randomNumber * 10;
-    const flooredNumber = Math.floor(scaledNumber);
-    const finalNumber = flooredNumber + 1;
-    const tt = [
-      "aa",
-      "bb",
-      "cc",
-      "dd",
-      "ee",
-      "ff",
-      "gg",
-      "hh",
-      "ii",
-      "jj",
-      "kk",
-      "ll",
-      "mm",
-      "nn",
-      "oo",
-    ];
-    return String(tt[finalNumber]);
-  };
+  }, []);
 
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
@@ -245,7 +229,7 @@ export const useAuthLogic = ({
             break;
         }
       } else {
-        setMessage(response.message || t("authPage.sendCodeFailed"));
+        setMessage(response.message || t("authPage.requestError"));
         setSeverity("error");
         setIsCodeSent(false);
       }

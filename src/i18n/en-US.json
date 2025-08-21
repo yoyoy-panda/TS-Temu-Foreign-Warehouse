@@ -2,8 +2,8 @@
   "translation": {
     "authPage": {
       "title": "Temu 海外倉",
-      "invalidRedirectLink": "Invalid redirectLink",
-      "missingRedirectLink": "Missing redirectLink ",
+      "invalidRedirectLinkOrInvalidTicket": "Invalid redirectLink or ticket",
+      "missingRedirectLinkOrMissingTicket": "Missing redirectLink or ticket",
       "emailLabel": "Email",
       "emailPlaceHolder": "email@example.com",
       "countryCodeLabel": "Country Code",

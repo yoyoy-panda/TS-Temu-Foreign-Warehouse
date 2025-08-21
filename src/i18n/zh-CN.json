@@ -2,8 +2,8 @@
   "translation": {
     "authPage": {
       "title": "Temu 海外仓",
-      "invalidRedirectLink": "无效的跳转链接 redirectLink",
-      "missingRedirectLink": "缺少 redirectLink 参数",
+      "invalidRedirectLinkOrInvalidTicket": "无效的跳转链接 redirectLink 或 ticket ",
+      "missingRedirectLinkOrMissingTicket": "缺少 redirectLink 或 ticket 参数",
       "emailLabel": "电子邮件(Email)",
       "emailPlaceHolder": "email@example.com",
       "countryCodeLabel": "电话国码",

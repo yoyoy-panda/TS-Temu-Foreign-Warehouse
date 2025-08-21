@@ -2,8 +2,8 @@
   "translation": {
     "authPage": {
       "title": "Temu 海外倉",
-      "invalidRedirectLink": "無效的跳轉連結 redirectLink",
-      "missingRedirectLink": "缺少 redirectLink 參數",
+      "invalidRedirectLinkOrInvalidTicket": "無效的 redirectLink 或 ticket",
+      "missingRedirectLinkOrMissingTicket": "缺少 redirectLink 或 ticket 參數",
       "emailLabel": "電子郵件(Email)",
       "emailPlaceHolder": "email@example.com",
       "countryCodeLabel": "電話國碼",
