@@ -271,7 +271,7 @@ export const useAuthLogic = ({
       const resultCode = Number(response.resultCode);
       switch (resultCode) {
         case 100:
-          setMessage(t("authPage.verifyCodeSuccess"));
+          setMessage(t("authPage.verifyCodeSuccess_100"));
           setIsCodeSent(false);
           if (redirectLink) {
             window.location.href = redirectLink;
