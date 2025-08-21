@@ -10,6 +10,7 @@ interface UseAuthLogicProps {
 }
 
 interface AuthLogicState {
+  isparamsChecked: boolean;
   redirectLink: string | null;
   email: string;
   emailError: string | null;
@@ -56,6 +57,7 @@ export const useAuthLogic = ({
     "success" | "error" | "info" | "warning" | null
   >(null);
   const [countdown, setCountdown] = useState(0);
+  const [isparamsChecked, setisparamsChecked] = useState(false);
   const [isGeneratingCode, setIsGeneratingCode] = useState(false);
 
   useEffect(() => {
@@ -65,14 +67,16 @@ export const useAuthLogic = ({
       const extractedRedirectLink = params.get("redirectLink");
 
       if (extractedRedirectLink) {
-        setRedirectLink(extractedRedirectLink);
+        const decodedLink = decodeURIComponent(extractedRedirectLink);
+        setRedirectLink(decodedLink);
         try {
-          const innerUrl = new URL(extractedRedirectLink);
+          const innerUrl = new URL(decodedLink);
           const innerParams = new URLSearchParams(innerUrl.search);
           const extractedTicket = innerParams.get("ticket");
 
           if (extractedTicket) {
             setTicket(extractedTicket);
+            setisparamsChecked(true);
           } else {
             setMessage(t("authPage.missingRedirectLinkOrMissingTicket"));
             setSeverity("error");
@@ -309,6 +313,7 @@ export const useAuthLogic = ({
 
   return {
     redirectLink,
+    isparamsChecked,
     email,
     emailError,
     countryCode,

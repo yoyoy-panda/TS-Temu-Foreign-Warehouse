@@ -8,6 +8,7 @@ import { textFieldSx } from "../styles/commonStyles";
 import CountryCodeSelect from "./CountryCodeSelect";
 
 interface AuthFormProps {
+  isparamsChecked:boolean;
   email: string;
   emailError: string | null;
   countryCode: string;
@@ -29,6 +30,7 @@ interface AuthFormProps {
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({
+  isparamsChecked,
   email,
   emailError,
   countryCode,
@@ -49,8 +51,8 @@ const AuthForm: React.FC<AuthFormProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  // 輸入框禁用條件：已發送驗證碼且倒數中/正在生成驗證碼
-  const isInputDisabled = (isCodeSent && countdown > 0) || isGeneratingCode;
+  // 輸入框禁用條件：已發送驗證碼且倒數中 / 正在生成驗證碼 / 網址參數有問題
+  const isInputDisabled = (isCodeSent && countdown > 0) || isGeneratingCode || !isparamsChecked;
   const isInputError =
     !email || !!emailError || !countryCode || !phone || !!phoneError;
 

@@ -12,7 +12,8 @@ const RESEND_TIMER = 3;
 
 const AuthPage: React.FC = () => {
   const { t } = useTranslation();
-  const {
+  const {    
+    isparamsChecked,
     email,
     emailError,
     countryCode,
@@ -53,6 +54,7 @@ const AuthPage: React.FC = () => {
       <AuthMessage message={message} severity={severity} />
 
       <AuthForm
+      isparamsChecked={isparamsChecked}
         email={email}
         emailError={emailError}
         countryCode={countryCode}
