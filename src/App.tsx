@@ -25,7 +25,7 @@ function App() {
             backgroundAttachment: "fixed", // 背景固定不動，不隨滾動條滾動，
           }}
         >
-          <Topbar title="" logoSrc={logoImage} />
+          <Topbar logoSrc={logoImage} />
           <Routes>
             <Route path="/" element={<AuthPage />} />
           </Routes>

@@ -5,7 +5,7 @@ import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 const Logo = styled.img`
   padding-top: 5px;
   padding-left: 15px;
-  height: 41px; /* LOGO 高度 */
+  height: 50px; /* LOGO 高度 */
 `;
 
 interface TopbarProps {
