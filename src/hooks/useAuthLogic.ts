@@ -174,7 +174,7 @@ export const useAuthLogic = ({
   };
 
   const handleAuthCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthCode(e.target.value);
+    setAuthCode(e.target.value.trim());
   };
 
   const handleGenerateCode = async () => {

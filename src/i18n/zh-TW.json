@@ -25,7 +25,7 @@
       "verifyCodeError_200": "ErrorCode: 200 - 驗證碼錯誤，請重新輸入",
       "verifyCodeError_300": "ErrorCode: 300 - 查無此 Email 或手機號碼的驗證資料，請重新產生驗證碼",
       "verifyCodeError_400": "ErrorCode: 400 - 驗證碼已逾時，請重新產生驗證碼",
-      "verifyCodeError_500": "ErrorCode: 500 - 資料庫推送失敗，請重新產生驗證碼",
+      "verifyCodeError_500": "ErrorCode: 500 - 資料庫推送至Temu失敗，請重新產生驗證碼",
       "verifyCodeError_600": "ErrorCode: 600 - 資料庫更新失敗，請重新產生驗證碼",
       "verifyCodeError": "驗證碼驗證時發生錯誤",
       "confirmBtn": "確認",

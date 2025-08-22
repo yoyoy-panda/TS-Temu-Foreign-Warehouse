@@ -25,7 +25,7 @@
       "verifyCodeError_200": "ErrorCode: 200 - Incorrect verification code, please re-enter",
       "verifyCodeError_300": "ErrorCode: 300 - No verification data found for this email or phone number, please regenerate the verification code",
       "verifyCodeError_400": "ErrorCode: 400 - Verification code has expired, please regenerate the verification code",
-      "verifyCodeError_500": "ErrorCode: 500 - Database push failed, please regenerate the verification code",
+      "verifyCodeError_500": "ErrorCode: 500 - failed during pushing data to Temu database, please regenerate the verification code",
       "verifyCodeError_600": "ErrorCode: 600 - Database update failed, please regenerate the verification code",
       "verifyCodeError": "Error verifying code",
       "confirmBtn": "Confirm",

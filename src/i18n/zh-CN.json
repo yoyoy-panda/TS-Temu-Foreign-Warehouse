@@ -25,7 +25,7 @@
       "verifyCodeError_200": "ErrorCode: 200 - 验证码错误，请重新输入",
       "verifyCodeError_300": "ErrorCode: 300 - 查无此 Email 或手机号码的验证资料，请重新生成验证码",
       "verifyCodeError_400": "ErrorCode: 400 - 验证码已逾时，请重新生成验证码",
-      "verifyCodeError_500": "ErrorCode: 500 - 数据库推送失败，请重新生成验证码",
+      "verifyCodeError_500": "ErrorCode: 500 - 数据库推送至Temu失败，请重新生成验证码",
       "verifyCodeError_600": "ErrorCode: 600 - 数据库更新失败，请重新生成验证码",
       "verifyCodeError": "验证码验证时发生错误",
       "confirmBtn": "确认",
