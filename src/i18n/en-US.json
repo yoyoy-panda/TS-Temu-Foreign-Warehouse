@@ -1,7 +1,7 @@
 {
   "translation": {
     "authPage": {
-      "title": "Temu 海外倉",
+      "title": "Temu Foreign Warehouse",
       "invalidRedirectLinkOrInvalidTicket": "Invalid redirectLink or ticket",
       "missingRedirectLinkOrMissingTicket": "Missing redirectLink or ticket",
       "emailLabel": "Email",
