@@ -72,17 +72,40 @@ const AuthForm: React.FC<AuthFormProps> = ({
         gap: 2,
         width: "100%",
         maxWidth: "600px",
-        p: 5,
+        p: 4.5,
         boxShadow: 5,
         borderRadius: 5,
         bgcolor: theme.palette.background.default + "ee",
       })}
     >
-      <Typography variant="h4" component="h2" sx={{ color: "text.primary" }}>
-        {t("authPage.title")}
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          width: "100%",
+          paddingBottom: 2,
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h2"
+          sx={{
+            color: "text.primary",
+            textAlign: "center",
+          }}
+        >
+          {t("authPage.title")}
+        </Typography>
 
-      <AuthMessage message={message} severity={severity} />
+        <AuthMessage
+          message={message}
+          severity={severity}
+          sx={{
+            marginTop: 1,
+          }}
+        />
+      </Box>
       {/**
        * email
        */}
