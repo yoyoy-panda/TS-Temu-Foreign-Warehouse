@@ -3,8 +3,9 @@ import styled from "@emotion/styled";
 import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 
 const Logo = styled.img`
-  height: 40px; /* LOGO 高度 */
-  margin-right: 20px;
+  padding-top: 5px;
+  padding-left: 15px;
+  height: 41px; /* LOGO 高度 */
 `;
 
 interface TopbarProps {
@@ -17,10 +18,19 @@ const Topbar: React.FC<TopbarProps> = ({ logoSrc, title, children }) => {
   return (
     <AppBar
       position="fixed"
-      elevation={1}
-      sx={{ boxShadow: "none", bgcolor: "transparent", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      elevation={0}
+      color="transparent"
+      sx={{
+        boxShadow: "none",
+        bgcolor: "transparent",
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+      }}
     >
-      <Toolbar>
+      <Toolbar
+        sx={{
+          bgcolor: "transparent",
+        }}
+      >
         {logoSrc && <Logo src={logoSrc} alt="Total Solution" />}
         {title && (
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
