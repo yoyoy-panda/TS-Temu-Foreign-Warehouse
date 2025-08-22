@@ -7,8 +7,10 @@ import { useTranslation } from "react-i18next";
 import { textFieldSx } from "../styles/commonStyles";
 import CountryCodeSelect from "./CountryCodeSelect";
 
+import AuthMessage from "../components/AuthMessage";
+
 interface AuthFormProps {
-  isparamsChecked:boolean;
+  isparamsChecked: boolean;
   email: string;
   emailError: string | null;
   countryCode: string;
@@ -19,6 +21,8 @@ interface AuthFormProps {
   countdown: number;
   LOCKDOWN_TIMER: number;
   RESEND_TIMER: number;
+  message: string | null;
+  severity: "success" | "error" | "info" | "warning" | null;
   isGeneratingCode: boolean;
   handleEmailChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCountryCodeChange: (code: string) => void;
@@ -39,6 +43,8 @@ const AuthForm: React.FC<AuthFormProps> = ({
   authCode,
   isCodeSent,
   countdown,
+  message,
+  severity,
   RESEND_TIMER,
   isGeneratingCode,
   handleEmailChange,
@@ -52,25 +58,31 @@ const AuthForm: React.FC<AuthFormProps> = ({
   const { t } = useTranslation();
 
   // 輸入框禁用條件：已發送驗證碼且倒數中 / 正在生成驗證碼 / 網址參數有問題
-  const isInputDisabled = (isCodeSent && countdown > 0) || isGeneratingCode || !isparamsChecked;
+  const isInputDisabled =
+    (isCodeSent && countdown > 0) || isGeneratingCode || !isparamsChecked;
   const isInputError =
     !email || !!emailError || !countryCode || !phone || !!phoneError;
 
   return (
     <Box
       component="form"
-      sx={{
+      sx={(theme) => ({
         display: "flex",
         flexDirection: "column",
         gap: 2,
         width: "100%",
-        maxWidth: "500px",
-        p: 3,
+        maxWidth: "600px",
+        p: 5,
         boxShadow: 5,
         borderRadius: 5,
-        bgcolor: "background.paper",
-      }}
+        bgcolor: theme.palette.background.default + "ee",
+      })}
     >
+      <Typography variant="h4" component="h2" sx={{ color: "text.primary" }}>
+        {t("authPage.title")}
+      </Typography>
+
+      <AuthMessage message={message} severity={severity} />
       {/**
        * email
        */}

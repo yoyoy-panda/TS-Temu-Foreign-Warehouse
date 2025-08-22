@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useAuthLogic } from "../hooks/useAuthLogic";
-import AuthMessage from "../components/AuthMessage";
 import AuthForm from "../components/AuthForm";
 
 // TODO
@@ -12,7 +11,7 @@ const RESEND_TIMER = 10;
 
 const AuthPage: React.FC = () => {
   const { t } = useTranslation();
-  const {    
+  const {
     isparamsChecked,
     email,
     emailError,
@@ -36,25 +35,19 @@ const AuthPage: React.FC = () => {
 
   return (
     <Box
-      sx={{
+      sx={(theme) => ({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "start",
         minHeight: "100dvh",
-        padding: 4,
-        bgcolor: "background.default",
+        padding: 25,
+        bgcolor: theme.palette.background.default + "00",
         color: "text.primary",
-      }}
+      })}
     >
-      <Typography variant="h4" component="h2" sx={{ color: "text.primary" }}>
-        {t("authPage.title")}
-      </Typography>
-
-      <AuthMessage message={message} severity={severity} />
-
       <AuthForm
-      isparamsChecked={isparamsChecked}
+        isparamsChecked={isparamsChecked}
         email={email}
         emailError={emailError}
         countryCode={countryCode}
@@ -63,6 +56,8 @@ const AuthPage: React.FC = () => {
         authCode={authCode}
         isCodeSent={isCodeSent}
         countdown={countdown}
+        message={message}
+        severity={severity}
         LOCKDOWN_TIMER={LOCKDOWN_TIMER}
         RESEND_TIMER={RESEND_TIMER}
         handleEmailChange={handleEmailChange}
