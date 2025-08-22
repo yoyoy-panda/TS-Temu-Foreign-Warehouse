@@ -134,10 +134,3 @@ npm run lint
 4.  推送到分支 (`git push origin feature/AmazingFeature`)。
 5.  開啟一個 Pull Request。
 
-## 許可證
-
-(請在此處填寫您的許可證資訊，例如 MIT 許可證)
-
-## 聯絡方式
-
-(請在此處填寫聯絡資訊，例如電子郵件或專案維護者)
