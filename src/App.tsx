@@ -15,17 +15,21 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <BrowserRouter>
-        <div
+        <Box
           className="bg-cover bg-center bg-fixed "
-          style={{ backgroundImage: `url('${backgroundImage}')` }}
+          style={{
+            backgroundImage: `url('${backgroundImage}')`,
+            backgroundRepeat: "no-repeat", // 防止圖片重複
+            backgroundSize: "cover", // 保持比例並覆蓋整個容器
+            backgroundPosition: "center center", // 圖片居中顯示
+            backgroundAttachment: "fixed", // 背景固定不動，不隨滾動條滾動，
+          }}
         >
           <Topbar title="" logoSrc={logoImage} />
-          <Box sx={{ flexGrow: 1, p: 3 }}>
-            <Routes>
-              <Route path="/" element={<AuthPage />} />
-            </Routes>
-          </Box>
-        </div>
+          <Routes>
+            <Route path="/" element={<AuthPage />} />
+          </Routes>
+        </Box>
       </BrowserRouter>
     </ThemeProvider>
   );
